@@ -162,7 +162,7 @@ class Game {
     advanceMatch() {
         if (!this.currentMatch) return;
         
-        this.currentMatch.nextStep();
+        this.currentMatch.nextStep(this.player);
         
         // 检查比赛是否结束
         if (this.currentMatch.ended) {
@@ -218,7 +218,7 @@ class Game {
      */
     startRound() {
         if (this.currentMatch && this.currentMatch.currentStep === 'playing') {
-            const currentMap = this.currentMatch.getAvailableBeatmaps().find(b => b.playing);
+            const currentMap = this.currentMatch.currentBeatmap;
             if (!currentMap) return null;
             
             return this.currentMatch.startRound(

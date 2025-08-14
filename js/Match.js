@@ -290,7 +290,7 @@ class Match {
         beatmap.playing = true;
         this.currentBeatmap = beatmap;
         this.currentStep = 'mods'; // 玩家选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
-        this.currentTurn = 'enemy'; // 确保下一步轮到对手
+        // this.currentTurn = 'enemy'; // 确保下一步轮到对手
         return beatmap;
     }
 
@@ -335,7 +335,7 @@ class Match {
         beatmap.playing = true;
         this.currentBeatmap = beatmap;
         this.currentStep = 'mods'  // 对手选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
-        this.currentTurn = 'player'; // 确保下一步轮到玩家
+        // this.currentTurn = 'player'; // 确保下一步轮到玩家
         return beatmap;
     }
 
@@ -473,8 +473,9 @@ class Match {
 
         // 准备下一回合
         this.currentStep = "pick";
-        // 切换选图顺序：胜者先选下一张图
-        this.currentTurn = roundWinner;
+        // 切换选图顺序
+        if (this.currentTurn === "enemy" ) this.currentTurn = "player";
+        else this.currentTurn = "enemy";
 
         return {
             playerScore,
@@ -486,7 +487,7 @@ class Match {
         };
     }
 
-    nextStep() {
+    nextStep(player) {
         if (this.currentStep === 'roll') {
             // roll点确定先ban还是后ban
             this.playerRoll = Math.floor(Math.random() * 100) + 1;
@@ -562,7 +563,7 @@ class Match {
                 this.enemySelectMods(currentMap.id);
 
             // 开始比赛回合
-            this.startRound(game.player, currentMap, playerMods, enemyMods);
+            this.startRound(player, currentMap, playerMods, enemyMods);
             return;
         }
     }

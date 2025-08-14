@@ -258,7 +258,7 @@ class GameController {
     }
 
     rollDice() {
-        this.game.currentMatch.nextStep();
+        this.game.currentMatch.nextStep(this.game.player);
 
         document.getElementById('player-roll').textContent = this.game.currentMatch.playerRoll;
         document.getElementById('enemy-roll').textContent = this.game.currentMatch.enemyRoll;
@@ -483,6 +483,7 @@ class GameController {
     }
 
     startRound() {
+        // TODO: 应该使用this.game.advanceMatch()
         const result = this.game.startRound();
         if (result) {
             document.getElementById('player-score').textContent = Math.round(result.playerScore);
