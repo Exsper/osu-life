@@ -47,6 +47,15 @@ class GameController {
         document.getElementById('confirm-mods').addEventListener('click', () => this.confirmMods());
         document.getElementById('next-round-btn').addEventListener('click', () => this.nextRound());
         document.getElementById('continue-btn').addEventListener('click', () => this.continueAfterMatch());
+        // 为mod按钮添加点击事件
+        document.querySelectorAll('.mod-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 禁用状态检查
+                if (!btn.disabled) {
+                    btn.classList.toggle('active');
+                }
+            });
+        });
     }
 
     showScreen(screenId) {
@@ -320,6 +329,12 @@ class GameController {
             setTimeout(() => {
                 this.game.currentMatch.enemyBanBeatmap();
                 this.updateBanScreen();
+
+                // 检查是否进入选图阶段
+                if (this.game.currentMatch.currentStep === 'pick') {
+                    this.showScreen('pick-screen');
+                    this.updatePickScreen();
+                }
             }, 1500);
         }
     }
@@ -397,7 +412,7 @@ class GameController {
     }
 
     prepareModSelection() {
-        const currentMap = this.game.currentMatch.currentBeatmap; 
+        const currentMap = this.game.currentMatch.currentBeatmap;
         if (currentMap) {
             // 更新mod选择界面
             document.getElementById('selected-map-name').textContent = `谱面 #${currentMap.id}`;
@@ -407,17 +422,49 @@ class GameController {
             document.getElementById('map-acc').textContent = currentMap.basic_acc_rating.toFixed(2);
             document.getElementById('map-combo').textContent = currentMap.maxcombo_rating.toFixed(2);
 
-            // 重置mod选择
-            document.querySelectorAll('.mod-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            // 获取mod按钮
+            const hrBtn = document.querySelector('.mod-btn[data-mod="hr"]');
+            const hdBtn = document.querySelector('.mod-btn[data-mod="hd"]');
+
+            // 重置所有mod按钮状态
+            hrBtn.classList.remove('active');
+            hdBtn.classList.remove('active');
+            hrBtn.disabled = false;
+            hdBtn.disabled = false;
+
+            // 根据图池类型设置mod按钮状态
+            switch (currentMap.poolType) {
+                case "EZ": {
+                    hrBtn.disabled = true; // 禁用HR按钮
+                    break;
+                }
+                case "DT": {
+                    hrBtn.disabled = true; // 禁用HR按钮
+                    break;
+                }
+                case 'HR':
+                    hrBtn.classList.add('active');
+                    hrBtn.disabled = true; // 禁用HR按钮
+                    break;
+                case 'HD':
+                    hdBtn.classList.add('active');
+                    hrBtn.disabled = true; // 禁用HR按钮
+                    hdBtn.disabled = true; // 禁用HD按钮
+                    break;
+                case 'FM':
+                case 'TB':
+                    // 允许自由选择HR和HD
+                    break;
+                default:
+                    // NM禁用所有mod按钮
+                    hrBtn.disabled = true;
+                    hdBtn.disabled = true;
+            }
 
             this.showScreen('mods-screen');
 
             // 对手自动选择mods
-            if (currentMap.poolType === 'FM' || currentMap.poolType === 'TB') {
-                this.game.currentMatch.enemySelectMods(currentMap.id);
-            }
+            this.game.currentMatch.enemySelectMods(currentMap.id);
         }
     }
 
@@ -425,7 +472,7 @@ class GameController {
         const hrSelected = document.querySelector('.mod-btn[data-mod="hr"]').classList.contains('active');
         const hdSelected = document.querySelector('.mod-btn[data-mod="hd"]').classList.contains('active');
 
-        const currentMap = this.game.currentMatch.getAvailableBeatmaps().find(b => b.playing);
+        const currentMap = this.game.currentMatch.currentBeatmap;
         if (currentMap) {
             this.game.playerSelectMods(currentMap.id, { HR: hrSelected, HD: hdSelected });
 

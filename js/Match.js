@@ -290,6 +290,7 @@ class Match {
         beatmap.playing = true;
         this.currentBeatmap = beatmap;
         this.currentStep = 'mods'; // 玩家选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
+        this.currentTurn = 'enemy'; // 确保下一步轮到对手
         return beatmap;
     }
 
@@ -308,7 +309,7 @@ class Match {
             HD: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
             NM: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
             FM: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
-            TB: this.enemy.men
+            // TB: this.enemy.men
         };
 
         // 找到对手最擅长的图池
@@ -334,6 +335,7 @@ class Match {
         beatmap.playing = true;
         this.currentBeatmap = beatmap;
         this.currentStep = 'mods'  // 对手选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
+        this.currentTurn = 'player'; // 确保下一步轮到玩家
         return beatmap;
     }
 
@@ -537,7 +539,7 @@ class Match {
         }
 
         if (this.currentStep === 'mods') {
-            const currentMap = this.getAvailableBeatmaps().find(b => b.playing);
+            const currentMap = this.currentBeatmap;
             if (!currentMap) return;
 
             // 对手自动选择mods（如果需要）
@@ -550,7 +552,7 @@ class Match {
         }
 
         if (this.currentStep === 'playing') {
-            const currentMap = this.getAvailableBeatmaps().find(b => b.playing);
+            const currentMap = this.currentBeatmap;
             if (!currentMap) return;
 
             // 获取玩家和对手的mods选择

@@ -51,12 +51,12 @@ class Beatmap {
 
         /**
          * 该谱面所在图池类型，有些图池需要强制开启mod
-         * NM - No mod，对谱面无特殊要求 score *= 1 \
-         * HR - 该谱面aim_rating *= 1.4, acc_rating *= 1.2, score *= 1.06 \
-         * DT - 该谱面spd_rating *= 1.5, score *= 1.12 \
+         * NM - 强制No mod，对谱面无特殊要求 score *= 1 \
+         * HR - 玩家自主选择是否开启HD，该谱面aim_rating *= 1.4, acc_rating *= 1.2, score *= 1.06 \
+         * DT - 玩家自主选择是否开启HD，该谱面spd_rating *= 1.5, score *= 1.12 \
          * HD - 对谱面无特殊要求 score *= 1.06 \
          * FM - 玩家自主选择NM(No mod, score *1)或HR(*1.06)或HD(*1.06)或HDHR(*1.12)，影响难度和满分 \
-         * EZ - 该谱面aim_rating *= 0.5, acc_rating *= 1.5，score *= 0.5, 只有某些特定规则的比赛会有此模式的图池 \
+         * EZ - 玩家自主选择是否开启HD，该谱面aim_rating *= 0.5, acc_rating *= 1.5，score *= 0.5, 只有某些特定规则的比赛会有此模式的图池 \
          * TB - 综合要求高，可以自主选择NM(No mod, score *1)或HR(*1.06)或HD(*1.06)或HDHR(*1.12)，不可被ban
          * @type {"NM" | "HR" | "DT" | "HD" | "FM" | "EZ" | "TB"}
          */

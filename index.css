@@ -351,6 +351,20 @@ body.evening {
     color: white;
 }
 
+/* 禁用状态样式 */
+.mod-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none; /* 阻止所有鼠标事件 */
+    background: var(--light-bg) !important;
+    border-color: #777 !important;
+}
+
+/* 激活状态的禁用按钮样式 */
+.mod-btn:disabled.active {
+    background: var(--primary) !important;
+}
+
 /* 结果界面 */
 .result-container {
     display: flex;
