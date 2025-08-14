@@ -30,6 +30,11 @@ class Match {
          */
         this.nowRound = 0;
 
+        /** 当前游玩谱面
+         * @type {Beatmap | null}
+         */
+        this.currentBeatmap = null;
+
         /** 当前轮到谁行动：'player' | 'enemy'
          * @type {"player" | "enemy"}
          */
@@ -283,6 +288,7 @@ class Match {
         beatmap.picked = true;
         beatmap.pickedBy = 'player';
         beatmap.playing = true;
+        this.currentBeatmap = beatmap;
         this.currentStep = 'mods'; // 玩家选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
         return beatmap;
     }
@@ -326,6 +332,7 @@ class Match {
         beatmap.picked = true;
         beatmap.pickedBy = 'enemy'
         beatmap.playing = true;
+        this.currentBeatmap = beatmap;
         this.currentStep = 'mods'  // 对手选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
         return beatmap;
     }

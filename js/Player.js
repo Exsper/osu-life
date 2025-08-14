@@ -202,15 +202,19 @@ class Player {
         let moneyGain = 10 + 5 * Math.floor(playerLevel / 2);
         this.money += moneyGain;
         // 略微随机提升能力
-        let aimGain = Math.random() * 0.1;
+        // 外设对训练提升
+        const impbonus = 1 + (this.keyboardLevel - 1) * 0.3 + (this.monitorLevel - 1) * 0.2 + (this.pcLevel - 1) * 0.1;
+        let aimGain = Math.random() * 0.1 * impbonus;
         this.aim += aimGain;
-        let spdGain = Math.random() * 0.1;
+        let spdGain = Math.random() * 0.1 * impbonus;
         this.spd += spdGain;
-        let accGain = Math.random() * 0.1;
+        let accGain = Math.random() * 0.1 * impbonus;
         this.acc += accGain;
-        let prf_EZGain = Math.random() * 0.1;
+        let menGain = Math.random() * 0.1 * impbonus;
+        this.men += menGain;
+        let prf_EZGain = Math.random() * 0.1 * impbonus;
         this.prf_EZ += prf_EZGain;
-        let prf_HDGain = Math.random() * 0.1;
+        let prf_HDGain = Math.random() * 0.1 * impbonus;
         this.prf_HD += prf_HDGain;
         return { moneyGain, aimGain, spdGain, accGain, prf_EZGain, prf_HDGain };
     }

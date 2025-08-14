@@ -366,7 +366,6 @@ class GameController {
                 }
             }
 
-            // TODO：这里应该改为图池强制mod加成后的数值
             card.innerHTML = beatmap.getInnerHTML();
 
             // 添加点击事件（非TB、仅当未被ban/pick且轮到玩家时）
@@ -384,6 +383,7 @@ class GameController {
             setTimeout(() => {
                 this.game.currentMatch.enemyPickBeatmap();
                 this.prepareModSelection();
+                this.showScreen('mods-screen');
             }, 1500);
         }
     }
@@ -392,11 +392,12 @@ class GameController {
         const beatmap = this.game.playerPick(bid);
         if (beatmap) {
             this.prepareModSelection();
+            this.showScreen('mods-screen');
         }
     }
 
     prepareModSelection() {
-        const currentMap = this.game.currentMatch.getAvailableBeatmaps().find(b => b.playing);
+        const currentMap = this.game.currentMatch.currentBeatmap; 
         if (currentMap) {
             // 更新mod选择界面
             document.getElementById('selected-map-name').textContent = `谱面 #${currentMap.id}`;
