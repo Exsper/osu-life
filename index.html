@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>osu!生活模拟器</title>
+    <script src="./js/Beatmap.js"></script>
+    <script src="./js/Player.js"></script>
+    <script src="./js/Shop.js"></script>
+    <script src="./js/Match.js"></script>
+    <script src="./js/Game.js"></script>
+    <script src="./js/GameController.js"></script>
+    <link href="./index.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- 日期时间显示 -->
+    <div class="time-display">
+        <div class="day-indicator">📅 第 <span id="current-day">1</span> 天</div>
+        <div class="time-indicator">⏰ <span id="current-time">上午</span></div>
+    </div>
+
+    <!-- 日期过渡动画 -->
+    <div class="day-transition" id="day-transition">
+        <div>第 <span id="transition-day">1</span> 天</div>
+    </div>
+
+    <!-- 主菜单界面 -->
+    <div class="screen active" id="main-menu">
+        <h2 class="screen-title">30天! osu!从入门到Top!（未完成，bug注意）</h2>
+
+        <div class="player-stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-name">osu ID:</span>
+                    <span class="stat-value">萌新</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">金钱:</span>
+                    <span class="stat-value" id="money-stat">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">精度(Aim):</span>
+                    <span class="stat-value" id="aim-stat">1.0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">速度(Spd):</span>
+                    <span class="stat-value" id="spd-stat">1.0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">准度(Acc):</span>
+                    <span class="stat-value" id="acc-stat">1.0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">心态(Men):</span>
+                    <span class="stat-value" id="men-stat">1.0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">EZ熟练度:</span>
+                    <span class="stat-value" id="ez-stat">1.0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">HD熟练度:</span>
+                    <span class="stat-value" id="hd-stat">1.0</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" id="train-btn">训练技能</button>
+        <button class="btn" id="work-btn">打工赚钱</button>
+        <button class="btn" id="webcast-btn">直播活动</button>
+        <button class="btn btn-warning" id="shop-btn">升级设备</button>
+    </div>
+
+    <!-- 训练界面 -->
+    <div class="screen" id="training-screen">
+        <h2 class="screen-title">技能训练</h2>
+        <p style="text-align: center; margin-bottom: 20px;">剩余训练点数: <span id="remaining-points">2</span></p>
+
+        <div class="training-grid">
+            <div class="training-card" data-type="aim">
+                <div class="training-icon">🎯</div>
+                <h3>精度训练</h3>
+                <p>提高瞄准能力</p>
+            </div>
+            <div class="training-card" data-type="spd">
+                <div class="training-icon">⚡</div>
+                <h3>速度训练</h3>
+                <p>提高操作速度</p>
+            </div>
+            <div class="training-card" data-type="acc">
+                <div class="training-icon">🎯</div>
+                <h3>准度训练</h3>
+                <p>提高击打准确度</p>
+            </div>
+            <div class="training-card" data-type="men">
+                <div class="training-icon">🧠</div>
+                <h3>心态训练</h3>
+                <p>提高比赛抗压能力</p>
+            </div>
+            <div class="training-card" data-type="ez">
+                <div class="training-icon">😌</div>
+                <h3>EZ Mod训练</h3>
+                <p>提高EZ Mod熟练度</p>
+            </div>
+            <div class="training-card" data-type="hd">
+                <div class="training-icon">👁️</div>
+                <h3>HD Mod训练</h3>
+                <p>提高HD Mod熟练度</p>
+            </div>
+        </div>
+
+        <button class="btn btn-danger" id="complete-train">完成训练</button>
+    </div>
+
+    <!-- 商店界面 -->
+    <div class="screen" id="shop-screen">
+        <h2 class="screen-title">设备商店</h2>
+
+        <div class="shop-items">
+            <div class="shop-item">
+                <div class="item-info">
+                    <div class="item-name">升级键盘设备（训练效果+30%）</div>
+                    <div class="item-level">当前等级: <span id="keyboard-level">1</span></div>
+                    <div class="item-cost">升级费用: <span id="keyboard-cost">100</span></div>
+                </div>
+                <button class="buy-btn" id="buy-keyboard">升级</button>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-info">
+                    <div class="item-name">升级显示器（训练效果+20%）</div>
+                    <div class="item-level">当前等级: <span id="monitor-level">1</span></div>
+                    <div class="item-cost">升级费用: <span id="monitor-cost">200</span></div>
+                </div>
+                <button class="buy-btn" id="buy-monitor">升级</button>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-info">
+                    <div class="item-name">升级主机配置（训练效果+10%）</div>
+                    <div class="item-level">当前等级: <span id="pc-level">1</span></div>
+                    <div class="item-cost">升级费用: <span id="pc-cost">200</span></div>
+                </div>
+                <button class="buy-btn" id="buy-pc">升级</button>
+            </div>
+        </div>
+
+        <button class="btn btn-danger" id="back-to-main-shop">返回主菜单</button>
+    </div>
+
+    <!-- 比赛介绍界面 -->
+    <div class="screen" id="match-intro">
+        <h2 class="screen-title">比赛日</h2>
+
+        <div class="opponent-info">
+            <h3 class="opponent-name" id="opponent-name">对手名称</h3>
+            <p>比赛难度: <span id="match-difficulty">★★★☆☆</span></p>
+            <div class="stats-grid" style="margin-top: 15px;">
+                <div class="stat-item">
+                    <span class="stat-name">对手Aim:</span>
+                    <span class="stat-value" id="opponent-aim">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">对手Spd:</span>
+                    <span class="stat-value" id="opponent-spd">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">对手Acc:</span>
+                    <span class="stat-value" id="opponent-acc">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-name">对手Men:</span>
+                    <span class="stat-value" id="opponent-men">0</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" id="start-match-btn">开始比赛</button>
+    </div>
+
+    <!-- Roll点界面 -->
+    <div class="screen" id="roll-screen">
+        <h2 class="screen-title">决定比赛顺序</h2>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <div style="font-size: 1.5rem; margin-bottom: 20px;">点击按钮进行Roll点</div>
+            <button class="btn" id="roll-btn">Roll点</button>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; margin-top: 30px;">
+            <div style="text-align: center;">
+                <div style="font-size: 1.2rem; margin-bottom: 10px;">你的点数</div>
+                <div id="player-roll" style="font-size: 3rem; color: var(--highlight);">-</div>
+            </div>
+            <div style="text-align: center;">
+                <div style="font-size: 1.2rem; margin-bottom: 10px;">对手点数</div>
+                <div id="enemy-roll" style="font-size: 3rem; color: var(--accent);">-</div>
+            </div>
+        </div>
+
+        <div id="roll-result" style="text-align: center; margin-top: 30px; font-size: 1.3rem;"></div>
+    </div>
+
+    <!-- Ban图界面 -->
+    <div class="screen" id="ban-screen">
+        <h2 class="screen-title">Ban图阶段</h2>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <p>请选择要Ban掉的谱面 (剩余: <span id="ban-remaining">0</span>)</p>
+            <p>当前回合: <span id="ban-turn">玩家</span></p>
+        </div>
+
+        <div class="beatmaps-container" id="ban-beatmaps">
+            <!-- 动态生成谱面卡片 -->
+        </div>
+    </div>
+
+    <!-- 选图界面 -->
+    <div class="screen" id="pick-screen">
+        <h2 class="screen-title">选图阶段</h2>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <p>请选择要游玩的谱面</p>
+            <p>当前回合: <span id="pick-turn">玩家</span></p>
+        </div>
+
+        <div class="beatmaps-container" id="pick-beatmaps">
+            <!-- 动态生成谱面卡片 -->
+        </div>
+    </div>
+
+    <!-- Mod选择界面 -->
+    <div class="screen" id="mods-screen">
+        <h2 class="screen-title">Mod选择</h2>
+
+        <div class="opponent-info" style="margin-bottom: 20px;">
+            <h3 id="selected-map-name">谱面名称</h3>
+            <div class="beatmap-stats">
+                <div>类型: <span id="map-type">NM</span></div>
+                <div>Aim难度: <span id="map-aim">0</span></div>
+                <div>速度难度: <span id="map-spd">0</span></div>
+                <div>准度难度: <span id="map-acc">0</span></div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 20px;">
+            <p>选择要使用的Mod</p>
+        </div>
+
+        <div class="mods-container">
+            <div class="mod-btn" data-mod="hr">HR</div>
+            <div class="mod-btn" data-mod="hd">HD</div>
+        </div>
+
+        <button class="btn" id="confirm-mods">确认选择</button>
+    </div>
+
+    <!-- 比赛结果界面 -->
+    <div class="screen" id="result-screen">
+        <h2 class="screen-title">比赛结果</h2>
+
+        <div class="result-container">
+            <div class="score-display">
+                <span id="player-score">0</span> - <span id="enemy-score">0</span>
+            </div>
+
+            <div id="round-winner" class="result-title">本回合胜者</div>
+
+            <div style="margin-top: 20px;">
+                <p>当前比分: <span id="player-win-count">0</span> - <span id="enemy-win-count">0</span></p>
+            </div>
+
+            <button class="btn" id="next-round-btn">下一回合</button>
+        </div>
+    </div>
+
+    <!-- 最终结果界面 -->
+    <div class="screen" id="final-result">
+        <h2 class="screen-title" id="match-result-title">比赛结果</h2>
+
+        <div class="result-container">
+            <div class="result-title" id="final-result-text">你赢得了比赛!</div>
+
+            <div style="font-size: 1.5rem; margin: 20px 0;">
+                最终比分: <span id="final-player-score">0</span> - <span id="final-enemy-score">0</span>
+            </div>
+
+            <button class="btn" id="continue-btn">继续游戏</button>
+        </div>
+    </div>
+
+    <script>
+        // 初始化游戏
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameController = new GameController();
+
+            // 为mod按钮添加点击事件
+            document.querySelectorAll('.mod-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
