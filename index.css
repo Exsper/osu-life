@@ -260,7 +260,7 @@ body.evening {
     text-align: center;
 }
 
-.opponent-name {
+.match-name {
     font-size: 1.8rem;
     margin-bottom: 15px;
     color: var(--accent);
@@ -277,6 +277,7 @@ body.evening {
     background: var(--light-bg);
     border-radius: 10px;
     padding: 15px;
+    min-height: 160px;
     position: relative;
     cursor: pointer;
     transition: all 0.3s;
@@ -285,6 +286,24 @@ body.evening {
 .beatmap-card:hover {
     transform: translateY(-5px);
     background: #3d566e;
+}
+
+.beatmap-card.banned {
+    opacity: 0.6;
+    background-color: #555 !important;
+}
+
+.beatmap-card.picked {
+    opacity: 0.6;
+    background-color: #555 !important;
+}
+
+.beatmap-card.player-action {
+    border: 3px solid #3498db !important; /* 蓝色边框表示玩家操作 */
+}
+
+.beatmap-card.enemy-action {
+    border: 3px solid #e74c3c !important; /* 红色边框表示对手操作 */
 }
 
 .beatmap-type {
@@ -306,8 +325,8 @@ body.evening {
 .beatmap-stats {
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    font-size: 0.9rem;
+    gap: 3px;
+    font-size: 0.85rem;
 }
 
 .mods-container {

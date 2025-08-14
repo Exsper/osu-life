@@ -173,6 +173,23 @@ class Match {
     }
 
     /**
+     * 获取所有谱面
+     * @returns {Array<Beatmap>}
+     */
+    getAllBeatmaps() {
+        const allPools = [
+            ...this.pool_NM,
+            ...this.pool_HR,
+            ...this.pool_DT,
+            ...this.pool_HD,
+            ...this.pool_FM,
+            ...this.pool_EZ,
+            ...this.pool_TB
+        ];
+        return allPools;
+    }
+
+    /**
      * 玩家ban图
      * @param {number} bid 谱面id
      */
@@ -183,6 +200,7 @@ class Match {
         if (!beatmap) return false;
 
         beatmap.banned = true;
+        beatmap.bannedBy = 'player';
         this.playerUsedBan++;
         // 如果双方都ban完，进入pick阶段
         if (this.playerUsedBan >= this.banSlots && this.enemyUsedBan >= this.banSlots) {
@@ -232,10 +250,12 @@ class Match {
         if (weakBeatmaps.length > 0) {
             const randomIndex = Math.floor(Math.random() * weakBeatmaps.length);
             weakBeatmaps[randomIndex].banned = true;
+            weakBeatmaps[randomIndex].bannedBy = 'enemy';
         } else {
             // 如果目标图池没有可用谱面，随机ban一张
             const randomIndex = Math.floor(Math.random() * available.length);
             available[randomIndex].banned = true;
+            available[randomIndex].bannedBy = 'enemy';
         }
 
         this.enemyUsedBan++;
@@ -261,6 +281,7 @@ class Match {
         if (!beatmap) return false;
 
         beatmap.picked = true;
+        beatmap.pickedBy = 'player';
         beatmap.playing = true;
         this.currentStep = 'mods'; // 玩家选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
         return beatmap;
@@ -303,6 +324,7 @@ class Match {
         const randomIndex = Math.floor(Math.random() * strongBeatmaps.length);
         const beatmap = strongBeatmaps[randomIndex];
         beatmap.picked = true;
+        beatmap.pickedBy = 'enemy'
         beatmap.playing = true;
         this.currentStep = 'mods'  // 对手选图后，双方同时选择mods（对手应立刻给出mods以便玩家参考），玩家点击“开始”后进行比赛
         return beatmap;
@@ -422,7 +444,7 @@ class Match {
         beatmap.playing = false;
 
         // 检查是否进入赛点（双方都差一分获胜）
-        if (this.playerWinRound === this.roundToWin - 1 && 
+        if (this.playerWinRound === this.roundToWin - 1 &&
             this.enemyWinRound === this.roundToWin - 1) {
             this.isTieBreak = true;
         }
@@ -460,7 +482,7 @@ class Match {
             // roll点确定先ban还是后ban
             this.playerRoll = Math.floor(Math.random() * 100) + 1;
             this.enemyRoll = Math.floor(Math.random() * 100) + 1;
-            
+
             if (this.playerRoll > this.enemyRoll) {
                 // 玩家点数大，先ban后pick
                 this.currentTurn = 'player';
@@ -468,7 +490,7 @@ class Match {
                 // 对手点数大，先ban后pick
                 this.currentTurn = 'enemy';
             }
-            
+
             this.currentStep = 'ban';
             return;
         }
@@ -496,7 +518,7 @@ class Match {
                 }
                 return;
             }
-            
+
             if (this.currentTurn === "player") {
                 // 等待玩家pick图（通过UI操作）
                 return;
@@ -510,12 +532,12 @@ class Match {
         if (this.currentStep === 'mods') {
             const currentMap = this.getAvailableBeatmaps().find(b => b.playing);
             if (!currentMap) return;
-            
+
             // 对手自动选择mods（如果需要）
             if (currentMap.poolType === 'FM' || currentMap.poolType === 'TB') {
                 this.enemySelectMods(currentMap.id);
             }
-            
+
             // 等待玩家选择mods（通过UI操作）
             return;
         }
@@ -523,13 +545,13 @@ class Match {
         if (this.currentStep === 'playing') {
             const currentMap = this.getAvailableBeatmaps().find(b => b.playing);
             if (!currentMap) return;
-            
+
             // 获取玩家和对手的mods选择
-            const playerMods = currentMap.playerMods || 
+            const playerMods = currentMap.playerMods ||
                 this.playerSelectMods(currentMap.id, { HR: false, HD: false });
-            const enemyMods = currentMap.enemyMods || 
+            const enemyMods = currentMap.enemyMods ||
                 this.enemySelectMods(currentMap.id);
-            
+
             // 开始比赛回合
             this.startRound(game.player, currentMap, playerMods, enemyMods);
             return;

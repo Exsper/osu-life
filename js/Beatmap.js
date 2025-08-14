@@ -69,6 +69,16 @@ class Beatmap {
         /** 对手开启mods
          */
         this.enemyMods = { HR: false, DT: false, HD: false, EZ: false };
+
+        /** 该谱面被谁ban了（如果被ban）
+         * @type {"player" | "enemy" | null}
+         */
+        this.bannedBy = null;
+
+        /** 该谱面被谁pick了（如果被pick）
+         * @type {"player" | "enemy" | null}
+         */
+        this.pickedBy = null;
     }
 
     /**
@@ -214,5 +224,18 @@ class Beatmap {
         const [min, mid, max] = sorted;
         // 按权重计算并求和，算出模拟成绩
         return (min * 0.5 + mid * 0.3 + max * 0.2) * maxScore;
+    }
+
+    // TODO：这里应该改为图池强制mod加成后的数值
+    getInnerHTML() {
+        return `<div class="beatmap-type">${this.poolType}</div>
+                <div class="beatmap-name">谱面 #${this.id}</div>
+                <div class="beatmap-stats">
+                    <div>CS: ${this.basic_aim_rating.toFixed(2)} ★</div>
+                    <div>BPM: ${this.basic_spd_rating.toFixed(2)} ★</div>
+                    <div>OD: ${this.basic_acc_rating.toFixed(2)} ★</div>
+                    <div>Combo: ${this.maxcombo_rating.toFixed(2)} ★</div>
+                </div>
+            `;
     }
 }

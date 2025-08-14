@@ -22,6 +22,11 @@ class Game {
          * @type {number[]}
          */
         this.matchDays = [7, 13, 19, 25, 31];
+
+        /** 比赛名称
+         * @type {string[]}
+         */
+        this.matchNames = ["1/8 决赛", "1/4 决赛", "半决赛", "决赛", "总决赛"];
         
         /** 游戏是否结束
          * @type {boolean}
@@ -64,6 +69,12 @@ class Game {
      */
     isMatchDay() {
         return this.matchDays.includes(this.day);
+    }
+
+    getMatchName() {
+        let index = this.matchDays.indexOf(this.day);
+        if (index < 0 || index >= this.matchNames.length) return "遭遇战？？";
+        return this.matchNames[index];
     }
 
     /**

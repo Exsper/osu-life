@@ -233,7 +233,7 @@ class GameController {
 
     updateMatchIntro() {
         const opponent = this.game.currentMatch.enemy;
-        document.getElementById('opponent-name').textContent = `对手 #${opponent.id}`;
+        document.getElementById('match-name').textContent = this.game.getMatchName();
         document.getElementById('opponent-aim').textContent = opponent.aim.toFixed(1);
         document.getElementById('opponent-spd').textContent = opponent.spd.toFixed(1);
         document.getElementById('opponent-acc').textContent = opponent.acc.toFixed(1);
@@ -281,27 +281,36 @@ class GameController {
         const container = document.getElementById('ban-beatmaps');
         container.innerHTML = '';
 
-        const beatmaps = this.game.currentMatch.getAvailableBeatmaps(false);
+        const beatmaps = this.game.currentMatch.getAllBeatmaps();
         beatmaps.forEach(beatmap => {
             const card = document.createElement('div');
             card.className = 'beatmap-card';
             card.dataset.id = beatmap.id;
 
-            card.innerHTML = `
-                        <div class="beatmap-type">${beatmap.poolType}</div>
-                        <div class="beatmap-name">谱面 #${beatmap.id}</div>
-                        <div class="beatmap-stats">
-                            <div>Aim: ${beatmap.basic_aim_rating.toFixed(1)}</div>
-                            <div>速度: ${beatmap.basic_spd_rating.toFixed(1)}</div>
-                            <div>准度: ${beatmap.basic_acc_rating.toFixed(1)}</div>
-                        </div>
-                    `;
-
-            card.addEventListener('click', () => {
-                if (this.game.currentMatch.currentTurn === 'player') {
-                    this.banBeatmap(beatmap.id);
+            if (beatmap.banned) {
+                card.classList.add('banned');
+                if (beatmap.bannedBy === 'player') {
+                    card.classList.add('player-action');
+                } else {
+                    card.classList.add('enemy-action');
                 }
-            });
+            } else if (beatmap.picked) {
+                card.classList.add('picked');
+                if (beatmap.pickedBy === 'player') {
+                    card.classList.add('player-action');
+                } else {
+                    card.classList.add('enemy-action');
+                }
+            }
+
+            card.innerHTML = beatmap.getInnerHTML();
+
+            // 添加点击事件（非TB、仅当未被ban且轮到玩家时）
+            if (beatmap.poolType != "TB" && !beatmap.banned && this.game.currentMatch.currentTurn === 'player') {
+                card.addEventListener('click', () => {
+                    this.banBeatmap(beatmap.id);
+                });
+            }
 
             container.appendChild(card);
         });
@@ -335,27 +344,37 @@ class GameController {
         const container = document.getElementById('pick-beatmaps');
         container.innerHTML = '';
 
-        const beatmaps = this.game.currentMatch.getAvailableBeatmaps(false);
+        const beatmaps = this.game.currentMatch.getAllBeatmaps();
         beatmaps.forEach(beatmap => {
             const card = document.createElement('div');
             card.className = 'beatmap-card';
             card.dataset.id = beatmap.id;
 
-            card.innerHTML = `
-                        <div class="beatmap-type">${beatmap.poolType}</div>
-                        <div class="beatmap-name">谱面 #${beatmap.id}</div>
-                        <div class="beatmap-stats">
-                            <div>Aim: ${beatmap.basic_aim_rating.toFixed(1)}</div>
-                            <div>速度: ${beatmap.basic_spd_rating.toFixed(1)}</div>
-                            <div>准度: ${beatmap.basic_acc_rating.toFixed(1)}</div>
-                        </div>
-                    `;
-
-            card.addEventListener('click', () => {
-                if (this.game.currentMatch.currentTurn === 'player') {
-                    this.pickBeatmap(beatmap.id);
+            if (beatmap.banned) {
+                card.classList.add('banned');
+                if (beatmap.bannedBy === 'player') {
+                    card.classList.add('player-action');
+                } else {
+                    card.classList.add('enemy-action');
                 }
-            });
+            } else if (beatmap.picked) {
+                card.classList.add('picked');
+                if (beatmap.pickedBy === 'player') {
+                    card.classList.add('player-action');
+                } else {
+                    card.classList.add('enemy-action');
+                }
+            }
+
+            // TODO：这里应该改为图池强制mod加成后的数值
+            card.innerHTML = beatmap.getInnerHTML();
+
+            // 添加点击事件（非TB、仅当未被ban/pick且轮到玩家时）
+            if (beatmap.poolType != "TB" && !beatmap.banned && !beatmap.picked && this.game.currentMatch.currentTurn === 'player') {
+                card.addEventListener('click', () => {
+                    this.pickBeatmap(beatmap.id);
+                });
+            }
 
             container.appendChild(card);
         });
@@ -382,9 +401,10 @@ class GameController {
             // 更新mod选择界面
             document.getElementById('selected-map-name').textContent = `谱面 #${currentMap.id}`;
             document.getElementById('map-type').textContent = currentMap.poolType;
-            document.getElementById('map-aim').textContent = currentMap.basic_aim_rating.toFixed(1);
-            document.getElementById('map-spd').textContent = currentMap.basic_spd_rating.toFixed(1);
-            document.getElementById('map-acc').textContent = currentMap.basic_acc_rating.toFixed(1);
+            document.getElementById('map-aim').textContent = currentMap.basic_aim_rating.toFixed(2);
+            document.getElementById('map-spd').textContent = currentMap.basic_spd_rating.toFixed(2);
+            document.getElementById('map-acc').textContent = currentMap.basic_acc_rating.toFixed(2);
+            document.getElementById('map-combo').textContent = currentMap.maxcombo_rating.toFixed(2);
 
             // 重置mod选择
             document.querySelectorAll('.mod-btn').forEach(btn => {
