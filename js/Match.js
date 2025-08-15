@@ -202,10 +202,10 @@ class Match {
      * @param {number} bid 谱面id
      */
     playerBanBeatmap(bid) {
-        if (this.playerUsedBan >= this.banSlots) return false;
+        if (this.playerUsedBan >= this.banSlots) throw "漏判玩家ban位";
 
         const beatmap = this.getAvailableBeatmaps(false).find(b => b.id === bid);
-        if (!beatmap) return false;
+        if (!beatmap) throw "找不到指定谱面或谱面不可用";
 
         beatmap.banned = true;
         beatmap.bannedBy = 'player';
@@ -226,11 +226,11 @@ class Match {
      * 对手ban图，根据自身属性进行简单判断
      */
     enemyBanBeatmap() {
-        if (this.enemyUsedBan >= this.banSlots) return false;
+        if (this.enemyUsedBan >= this.banSlots) throw "漏判对手ban位";
 
         // 对手AI: ban掉自己最不擅长的图池中的谱面
         const available = this.getAvailableBeatmaps(false);
-        if (available.length === 0) return false;
+        if (available.length <= 0) throw "找不到可用谱面";
 
         // 计算各图池的难度评分
         const poolScores = {
@@ -286,7 +286,7 @@ class Match {
      */
     playerPickBeatmap(bid) {
         const beatmap = this.getAvailableBeatmaps(false).find(b => b.id === bid);
-        if (!beatmap) return false;
+        if (!beatmap) throw "找不到可用谱面";
 
         beatmap.picked = true;
         beatmap.pickedBy = 'player';
@@ -302,7 +302,7 @@ class Match {
      */
     enemyPickBeatmap() {
         const available = this.getAvailableBeatmaps(false);
-        if (available.length === 0) return null;
+        if (available.length <= 0) throw "找不到可用谱面";
 
         // 对手AI: 选择自己最擅长的图池中的谱面
         const poolScores = {
@@ -327,7 +327,7 @@ class Match {
 
         // 在该图池中随机选一张图
         let strongBeatmaps = this[`pool_${strongestPool}`].filter(b => !b.banned && !b.picked);
-        if (strongBeatmaps.length === 0) {
+        if (strongBeatmaps.length <= 0) {
             strongBeatmaps = available;
         }
 
@@ -348,8 +348,8 @@ class Match {
      * @param {{"HR": boolean, "HD": boolean}} mods 在图池强制mod之外选择的mod，只有FM和TB图池才可以自由选择mods
      */
     playerSelectMods(bid, mods) {
-        const beatmap = this.getAvailableBeatmaps().find(b => b.id === bid);
-        if (!beatmap || !beatmap.playing) return null;
+        const beatmap = this.currentBeatmap;
+        if (!beatmap || bid !== this.currentBeatmap.id || !beatmap.playing) throw "谱面出错";
 
         // 根据图池类型处理强制mod
         const finalMods = { HR: false, DT: false, HD: false, EZ: false };
@@ -378,6 +378,9 @@ class Match {
         // 设置当前谱面的mods
         beatmap.playerMods = finalMods;
 
+        // 推进
+        this.currentStep = 'playing';
+
         return finalMods;
     }
 
@@ -387,8 +390,8 @@ class Match {
      * @param {number} bid 谱面id
      */
     enemySelectMods(bid) {
-        const beatmap = this.getAvailableBeatmaps().find(b => b.id === bid);
-        if (!beatmap || !beatmap.playing) return null;
+        const beatmap = this.currentBeatmap;
+        if (!beatmap || bid !== this.currentBeatmap.id || !beatmap.playing) throw "谱面出错";
 
         // 根据图池类型处理强制mod
         const finalMods = { HR: false, DT: false, HD: false, EZ: false };
@@ -432,7 +435,7 @@ class Match {
      * @param {{"HR": boolean, "DT": boolean, "HD": boolean, "EZ": boolean}} enemySelectedMods 对手最终选择的mod，包含图池强制的mod
      */
     startRound(player, beatmap, playerSelectedMods, enemySelectedMods) {
-        if (!beatmap || !beatmap.playing) return null;
+        if (!beatmap || !beatmap.playing) throw "谱面出错";
 
         let playerScore = beatmap.getSimScore(player, playerSelectedMods);
         let enemyScore = beatmap.getSimScore(this.enemy, enemySelectedMods);
@@ -544,12 +547,10 @@ class Match {
 
         if (this.currentStep === 'mods') {
             const currentMap = this.currentBeatmap;
-            if (!currentMap) return;
+            if (!currentMap) throw "当前谱面出错";
 
-            // 对手自动选择mods（如果需要）
-            if (currentMap.poolType === 'FM' || currentMap.poolType === 'TB') {
-                this.enemySelectMods(currentMap.id);
-            }
+            // 对手自动选择mods
+            this.enemySelectMods(currentMap.id);
 
             // 等待玩家选择mods（通过UI操作）
             return;
@@ -557,7 +558,7 @@ class Match {
 
         if (this.currentStep === 'playing') {
             const currentMap = this.currentBeatmap;
-            if (!currentMap) return;
+            if (!currentMap) throw "当前谱面出错";
 
             // 获取玩家和对手的mods选择
             const playerMods = currentMap.playerMods ||

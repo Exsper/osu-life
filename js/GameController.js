@@ -327,7 +327,7 @@ class GameController {
         // 如果是对手回合，自动ban图
         if (this.game.currentMatch.currentTurn === 'enemy') {
             setTimeout(() => {
-                this.game.currentMatch.enemyBanBeatmap();
+                this.game.advanceMatch();
                 this.updateBanScreen();
 
                 // 检查是否进入选图阶段
@@ -473,7 +473,7 @@ class GameController {
             this.showScreen('mods-screen');
 
             // 对手自动选择mods
-            this.game.currentMatch.enemySelectMods(currentMap.id);
+            this.game.advanceMatch();
         }
     }
 

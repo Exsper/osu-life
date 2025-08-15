@@ -160,7 +160,7 @@ class Game {
      * 推进比赛流程
      */
     advanceMatch() {
-        if (!this.currentMatch) return;
+        if (!this.currentMatch) throw "当前比赛出错";
         
         this.currentMatch.nextStep(this.player);
         
@@ -187,7 +187,7 @@ class Game {
         if (this.currentMatch && this.currentMatch.currentStep === 'ban' && this.currentMatch.currentTurn === 'player') {
             return this.currentMatch.playerBanBeatmap(bid);
         }
-        return false;
+        throw "场景错误";
     }
 
     /**
@@ -198,7 +198,7 @@ class Game {
         if (this.currentMatch && this.currentMatch.currentStep === 'pick' && this.currentMatch.currentTurn === 'player') {
             return this.currentMatch.playerPickBeatmap(bid);
         }
-        return null;
+        throw "场景错误";
     }
 
     /**
@@ -210,7 +210,7 @@ class Game {
         if (this.currentMatch && this.currentMatch.currentStep === 'mods') {
             return this.currentMatch.playerSelectMods(bid, mods);
         }
-        return null;
+        throw "场景错误";
     }
 
     /**
@@ -219,7 +219,7 @@ class Game {
     startRound() {
         if (this.currentMatch && this.currentMatch.currentStep === 'playing') {
             const currentMap = this.currentMatch.currentBeatmap;
-            if (!currentMap) return null;
+            if (!currentMap) throw "当前谱面错误";
             
             this.advanceMatch();
 
