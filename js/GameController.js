@@ -172,6 +172,9 @@ class GameController {
     }
 
     updateShopScreen() {
+        // 更新金钱显示
+        document.getElementById('shop-money').textContent = this.game.player.money.toFixed(0);
+
         // 计算键盘加成百分比（每级30%）
         const keyboardBonus = (this.game.player.keyboardLevel - 1) * 30;
         document.getElementById('keyboard-level').innerHTML =
