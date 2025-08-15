@@ -99,14 +99,14 @@ class Game {
      * 玩家工作
      */
     playerWork() {
-        return this.player.goWork();
+        return this.player.goWork(this.timeSlot);
     }
 
     /**
      * 玩家直播
      */
     playerWebcast() {
-        return this.player.goWebcast();
+        return this.player.goWebcast(this.timeSlot);
     }
 
     /**

@@ -169,7 +169,7 @@ class Player {
         this.spd = baseStar * (1 + (Math.random() * randFactor * 2) - randFactor);
         this.acc = baseStar * (1 + (Math.random() * randFactor * 2) - randFactor);
         this.men = baseStar * (1 + (Math.random() * randFactor * 2) - randFactor);
-        
+
         // 为对手添加 mod 熟练度
         this.prf_EZ = 1 + Math.random() * 2;
         this.prf_HD = 1 + Math.random() * 2;
@@ -186,8 +186,15 @@ class Player {
     /**
      * 选择工作活动，获得一定金钱
      */
-    goWork() {
-        let gain = 50 + 25 * Math.floor(this.workCount / 5);
+    goWork(timeSlot) {
+        let baseGain = 50 + 25 * Math.floor(this.workCount / 5);
+        let gain = baseGain;
+
+        // 晚上工作获得50%额外奖励
+        if (timeSlot === 'evening') {
+            gain = gain * 1.5;
+        }
+
         this.money += gain;
         this.workCount += 1;
         return gain;
@@ -196,10 +203,16 @@ class Player {
     /**
      * 选择直播活动，获得一定金钱和能力提升
      */
-    goWebcast() {
+    goWebcast(timeSlot) {
         let playerLevel = Math.floor((this.aim + this.spd + this.acc + this.prf_EZ + this.prf_HD) / 5);
-        // 根据当前实力提升金钱奖励
-        let moneyGain = 10 + 5 * Math.floor(playerLevel / 2);
+        let baseMoneyGain = 10 + 5 * Math.floor(playerLevel / 2);
+        let moneyGain = baseMoneyGain;
+
+        // 晚上直播获得100%额外奖励
+        if (timeSlot === 'evening') {
+            moneyGain = baseMoneyGain * 2;
+        }
+
         this.money += moneyGain;
         // 略微随机提升能力
         // 外设对训练提升
