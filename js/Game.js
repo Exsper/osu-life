@@ -221,12 +221,9 @@ class Game {
             const currentMap = this.currentMatch.currentBeatmap;
             if (!currentMap) return null;
             
-            return this.currentMatch.startRound(
-                this.player, 
-                currentMap, 
-                currentMap.playerMods, 
-                currentMap.enemyMods
-            );
+            this.advanceMatch();
+
+            return this.currentMatch.lastRoundData;
         }
         return null;
     }

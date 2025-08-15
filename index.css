@@ -352,7 +352,7 @@ body.evening {
 }
 
 /* 禁用状态样式 */
-.mod-btn:disabled {
+.mod-btn.disabled {
     opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none; /* 阻止所有鼠标事件 */
@@ -361,7 +361,7 @@ body.evening {
 }
 
 /* 激活状态的禁用按钮样式 */
-.mod-btn:disabled.active {
+.mod-btn.disabled.active {
     background: var(--primary) !important;
 }
 

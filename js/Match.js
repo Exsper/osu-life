@@ -129,6 +129,9 @@ class Match {
 
         // 赛点标志
         this.isTieBreak = false;
+
+        // 上回合数据
+        this.lastRoundData = null;
     }
 
     genBeatmaps() {
@@ -563,7 +566,7 @@ class Match {
                 this.enemySelectMods(currentMap.id);
 
             // 开始比赛回合
-            this.startRound(player, currentMap, playerMods, enemyMods);
+            this.lastRoundData = this.startRound(player, currentMap, playerMods, enemyMods);
             return;
         }
     }

@@ -258,7 +258,7 @@ class GameController {
     }
 
     rollDice() {
-        this.game.currentMatch.nextStep(this.game.player);
+        this.game.advanceMatch();
 
         document.getElementById('player-roll').textContent = this.game.currentMatch.playerRoll;
         document.getElementById('enemy-roll').textContent = this.game.currentMatch.enemyRoll;
@@ -428,7 +428,9 @@ class GameController {
 
             // 重置所有mod按钮状态
             hrBtn.classList.remove('active');
+            hrBtn.classList.remove('disabled');
             hdBtn.classList.remove('active');
+            hdBtn.classList.remove('disabled');
             hrBtn.disabled = false;
             hdBtn.disabled = false;
 
@@ -436,20 +438,25 @@ class GameController {
             switch (currentMap.poolType) {
                 case "EZ": {
                     hrBtn.disabled = true; // 禁用HR按钮
+                    hrBtn.classList.add('disabled');
                     break;
                 }
                 case "DT": {
                     hrBtn.disabled = true; // 禁用HR按钮
+                    hrBtn.classList.add('disabled');
                     break;
                 }
                 case 'HR':
                     hrBtn.classList.add('active');
                     hrBtn.disabled = true; // 禁用HR按钮
+                    hrBtn.classList.add('disabled');
                     break;
                 case 'HD':
                     hdBtn.classList.add('active');
                     hrBtn.disabled = true; // 禁用HR按钮
+                    hrBtn.classList.add('disabled');
                     hdBtn.disabled = true; // 禁用HD按钮
+                    hdBtn.classList.add('disabled');
                     break;
                 case 'FM':
                 case 'TB':
@@ -458,7 +465,9 @@ class GameController {
                 default:
                     // NM禁用所有mod按钮
                     hrBtn.disabled = true;
+                    hrBtn.classList.add('disabled');
                     hdBtn.disabled = true;
+                    hdBtn.classList.add('disabled');
             }
 
             this.showScreen('mods-screen');
@@ -483,7 +492,6 @@ class GameController {
     }
 
     startRound() {
-        // TODO: 应该使用this.game.advanceMatch()
         const result = this.game.startRound();
         if (result) {
             document.getElementById('player-score').textContent = Math.round(result.playerScore);
