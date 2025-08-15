@@ -87,6 +87,13 @@ class Game {
     }
 
     /**
+     * 清空当前比赛
+     */
+    clearMatch() {
+        this.currentMatch = null;
+    }
+
+    /**
      * 进行玩家训练
      * @param {"aim" | "spd" | "acc" | "men" | "ez" | "hd"} type 训练类型
      */

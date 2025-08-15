@@ -78,6 +78,23 @@ class GameController {
         }
     }
 
+    showToast(message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // 显示toast
+        setTimeout(() => toast.classList.add('show'), 10);
+
+        // 1秒后移除
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => container.removeChild(toast), 300);
+        }, 1000);
+    }
+
     updateUI() {
         // 更新日期时间
         document.getElementById('current-day').textContent = this.game.day;
@@ -117,11 +134,11 @@ class GameController {
     playerTrain(type) {
         if (this.game.player.trainingPoints > 0) {
             const improvement = this.game.playerTrain(type);
-            alert(`训练成功! ${this.getTrainingName(type)} 提升了 ${improvement}`);
+            this.showToast(`训练成功! ${this.getTrainingName(type)} 提升了 ${improvement}`);
             this.updateTrainingScreen();
             this.updateUI();
         } else {
-            alert('没有足够的训练点数!');
+            this.showToast('没有足够的训练点数!');
         }
     }
 
@@ -143,13 +160,13 @@ class GameController {
 
     playerWork() {
         const gain = this.game.playerWork();
-        alert(`工作完成! 赚取了 ${gain} 金钱`);
+        this.showToast(`工作完成! 赚取了 ${gain} 金钱`);
         this.nextTimeSlot();
     }
 
     playerWebcast() {
         const result = this.game.playerWebcast();
-        alert(`直播完成! 赚取了 ${result.moneyGain} 金钱，并提升了技能`);
+        this.showToast(`直播完成! 赚取了 ${result.moneyGain} 金钱，并提升了技能`);
         this.nextTimeSlot();
     }
 
@@ -169,31 +186,31 @@ class GameController {
 
     buyKeyboard() {
         if (this.game.buyKeyboard()) {
-            alert('键盘升级成功!');
+            this.showToast('键盘升级成功!');
             this.updateShopScreen();
             this.updateUI();
         } else {
-            alert('金钱不足或已达最高等级!');
+            this.showToast('金钱不足或已达最高等级!');
         }
     }
 
     buyMonitor() {
         if (this.game.buyMonitor()) {
-            alert('显示器升级成功!');
+            this.showToast('显示器升级成功!');
             this.updateShopScreen();
             this.updateUI();
         } else {
-            alert('金钱不足或已达最高等级!');
+            this.showToast('金钱不足或已达最高等级!');
         }
     }
 
     buyPc() {
         if (this.game.buyPc()) {
-            alert('主机升级成功!');
+            this.showToast('主机升级成功!');
             this.updateShopScreen();
             this.updateUI();
         } else {
-            alert('金钱不足或已达最高等级!');
+            this.showToast('金钱不足或已达最高等级!');
         }
     }
 
@@ -507,13 +524,6 @@ class GameController {
 
             document.getElementById('player-win-count').textContent = result.playerWinRound;
             document.getElementById('enemy-win-count').textContent = result.enemyWinRound;
-
-            // 检查比赛是否结束
-            if (result.ended) {
-                setTimeout(() => {
-                    this.showFinalResult(result);
-                }, 3000);
-            }
         }
     }
 
@@ -530,6 +540,11 @@ class GameController {
             document.getElementById('final-result-text').textContent = '很遗憾，你输掉了比赛';
             document.getElementById('final-result-text').className = 'result-title lose';
         }
+
+        this.game.clearMatch();
+        // 重置网页元素
+        document.getElementById('player-roll').textContent = "-";
+        document.getElementById('enemy-roll').textContent = "-";
 
         this.showScreen('final-result');
     }
@@ -548,7 +563,7 @@ class GameController {
 
     continueAfterMatch() {
         if (this.game.gameOver) {
-            alert('游戏结束! 请刷新页面重新开始');
+            this.showToast('游戏结束! 请刷新页面重新开始');
             return;
         }
 
