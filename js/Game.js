@@ -17,7 +17,7 @@ class Game {
         this.opponents = [];
         this.currentMatch = null;
         this.shop = new Shop();
-        
+
         /** 比赛日数组
          * @type {number[]}
          */
@@ -27,12 +27,12 @@ class Game {
          * @type {string[]}
          */
         this.matchNames = ["1/8 决赛", "1/4 决赛", "半决赛", "决赛", "总决赛"];
-        
+
         /** 游戏是否结束
          * @type {boolean}
          */
         this.gameOver = false;
-        
+
         /** 游戏是否胜利
          * @type {boolean}
          */
@@ -43,12 +43,6 @@ class Game {
      * 推进到下一个时间段
      */
     nextTimeSlot() {
-        if (this.isMatchDay()) {
-            // 比赛日直接跳过所有时间段
-            this.day++;
-            return;
-        }
-        
         switch (this.timeSlot) {
             case 'morning':
                 this.timeSlot = 'afternoon';
@@ -98,30 +92,21 @@ class Game {
      * @param {"aim" | "spd" | "acc" | "men" | "ez" | "hd"} type 训练类型
      */
     playerTrain(type) {
-        if (!this.isMatchDay()) {
-            return this.player.train(type);
-        }
-        return 0;
+        return this.player.train(type);
     }
 
     /**
      * 玩家工作
      */
     playerWork() {
-        if (!this.isMatchDay()) {
-            return this.player.goWork();
-        }
-        return 0;
+        return this.player.goWork();
     }
 
     /**
      * 玩家直播
      */
     playerWebcast() {
-        if (!this.isMatchDay()) {
-            return this.player.goWebcast();
-        }
-        return { moneyGain: 0 };
+        return this.player.goWebcast();
     }
 
     /**
@@ -168,9 +153,9 @@ class Game {
      */
     advanceMatch() {
         if (!this.currentMatch) throw "当前比赛出错";
-        
+
         this.currentMatch.nextStep(this.player);
-        
+
         // 检查比赛是否结束
         if (this.currentMatch.ended) {
             if (this.currentMatch.playerWinRound > this.currentMatch.enemyWinRound) {
@@ -227,7 +212,7 @@ class Game {
         if (this.currentMatch && this.currentMatch.currentStep === 'playing') {
             const currentMap = this.currentMatch.currentBeatmap;
             if (!currentMap) throw "当前谱面错误";
-            
+
             this.advanceMatch();
 
             return this.currentMatch.lastRoundData;

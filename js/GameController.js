@@ -104,7 +104,7 @@ class GameController {
         document.body.classList.remove("morning");
         document.body.classList.remove("afternoon");
         document.body.classList.remove("evening");
-        if (!this.game.isMatchDay()) document.body.classList.add(this.game.timeSlot);
+        document.body.classList.add(this.game.timeSlot);
 
         // 更新玩家状态
         document.getElementById('money-stat').textContent = this.game.player.money.toFixed(0) + " G";
@@ -114,12 +114,6 @@ class GameController {
         document.getElementById('men-stat').textContent = this.game.player.men.toFixed(2) + " ★";
         document.getElementById('ez-stat').textContent = this.game.player.prf_EZ.toFixed(2) + " ★";
         document.getElementById('hd-stat').textContent = this.game.player.prf_HD.toFixed(2) + " ★";
-
-        // 检查是否是比赛日
-        if (this.game.isMatchDay() && this.currentScreen !== 'match-intro') {
-            this.startMatch();
-            this.showScreen('match-intro');
-        }
     }
 
     getTimeSlotText() {
@@ -137,6 +131,13 @@ class GameController {
             this.showToast(`训练成功! ${this.getTrainingName(type)} 提升了 ${improvement}`);
             this.updateTrainingScreen();
             this.updateUI();
+
+            // 如果训练点为0，自动点击完成训练按钮
+            if (this.game.player.trainingPoints === 0) {
+                setTimeout(() => {
+                    document.getElementById('complete-train').click();
+                }, 100); // 短暂延迟确保UI更新完成
+            }
         } else {
             this.showToast('没有足够的训练点数!');
         }
@@ -171,9 +172,20 @@ class GameController {
     }
 
     updateShopScreen() {
-        document.getElementById('keyboard-level').textContent = this.game.player.keyboardLevel;
-        document.getElementById('monitor-level').textContent = this.game.player.monitorLevel;
-        document.getElementById('pc-level').textContent = this.game.player.pcLevel;
+        // 计算键盘加成百分比（每级30%）
+        const keyboardBonus = (this.game.player.keyboardLevel - 1) * 30;
+        document.getElementById('keyboard-level').innerHTML =
+            `${this.game.player.keyboardLevel} <span style="font-size:0.8em">(训练效果+${keyboardBonus}%)</span>`;
+
+        // 计算显示器加成百分比（每级20%）
+        const monitorBonus = (this.game.player.monitorLevel - 1) * 20;
+        document.getElementById('monitor-level').innerHTML =
+            `${this.game.player.monitorLevel} <span style="font-size:0.8em">(训练效果+${monitorBonus}%)</span>`;
+
+        // 计算主机加成百分比（每级10%）
+        const pcBonus = (this.game.player.pcLevel - 1) * 10;
+        document.getElementById('pc-level').innerHTML =
+            `${this.game.player.pcLevel} <span style="font-size:0.8em">(训练效果+${pcBonus}%)</span>`;
 
         const keyboardCost = this.game.shop.showKeyboardCost(this.game.player);
         const monitorCost = this.game.shop.showMonitorCost(this.game.player);
@@ -223,27 +235,58 @@ class GameController {
                 this.game.nextTimeSlot();
                 this.updateUI();
                 this.hideDayTransition();
-
-                // 如果进入比赛日，显示比赛介绍界面
-                if (this.game.isMatchDay()) {
-                    this.showScreen('match-intro');
-                } else {
-                    this.showScreen('main-menu');
-                }
+                this.showScreen('main-menu');
                 this.isTransitioning = false;
             }, 1000);
         }
         else {
             this.game.nextTimeSlot();
             this.updateUI();
+
+            // 如果进入比赛日并且是晚上，显示比赛介绍界面
+            if (this.game.isMatchDay() && this.game.timeSlot === 'evening') {
+                this.startMatch();
+                this.showScreen('match-intro');
+            } else {
+                this.showScreen('main-menu');
+            }
         }
+    }
+
+    // 计算下一日距比赛天数
+    getDaysToNextMatch(currentDay) {
+        const matchDays = this.game.matchDays;
+
+        // 查找下一个比赛日
+        const nextMatchDay = matchDays.find(day => day >= currentDay);
+
+        if (nextMatchDay) {
+            return nextMatchDay - currentDay;
+        }
+        // 如果当前是最后一天或之后没有比赛日
+        return -1;
     }
 
     showDayTransition() {
         const transition = document.getElementById('day-transition');
         const dayElement = document.getElementById('transition-day');
+        const daysToMatchElement = document.getElementById('days-to-match');
 
-        dayElement.textContent = this.game.day + 1;
+        const nextDay = this.game.day + 1;
+        dayElement.textContent = nextDay;
+
+        // 计算距比赛天数
+        const daysToMatch = this.getDaysToNextMatch(nextDay);
+
+        // 设置提示文字
+        if (daysToMatch === 0) {
+            daysToMatchElement.textContent = "今晚比赛！";
+        } else if (daysToMatch > 0) {
+            daysToMatchElement.textContent = `距比赛还有 ${daysToMatch} 天`;
+        } else {
+            daysToMatchElement.textContent = "比赛已全部结束";
+        }
+
         transition.classList.add('active');
     }
 
@@ -567,7 +610,7 @@ class GameController {
             return;
         }
 
-        this.game.nextTimeSlot();
+        this.nextTimeSlot();
         this.updateUI();
         this.showScreen('main-menu');
     }

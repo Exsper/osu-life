@@ -424,7 +424,7 @@ body.evening {
     margin: 10px 0;
 }
 
-/* 淡入淡出动画 */
+/* 换日淡入淡出动画 */
 .day-transition {
     position: fixed;
     top: 0;
@@ -440,6 +440,13 @@ body.evening {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease;
+    color: white;
+    text-align: center;
+    flex-direction: column;
+}
+
+.day-transition > div {
+    align-items: center;
 }
 
 .day-transition.active {
