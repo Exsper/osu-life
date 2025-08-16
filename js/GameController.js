@@ -22,6 +22,22 @@ class GameController {
         document.getElementById('webcast-btn').addEventListener('click', () => this.playerWebcast());
         document.getElementById('rest-btn').addEventListener('click', () => this.playerRest());
         document.getElementById('shop-btn').addEventListener('click', () => this.showScreen('shop-screen'));
+        document.querySelectorAll('.shop-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                // 检查点击的是否是购买按钮
+                if (e.target.classList.contains('buy-btn')) return;
+
+                // 根据商品项ID确定购买类型
+                const id = item.id;
+                if (id === 'keyboard-item') {
+                    this.buyKeyboard();
+                } else if (id === 'monitor-item') {
+                    this.buyMonitor();
+                } else if (id === 'pc-item') {
+                    this.buyPc();
+                }
+            });
+        });
 
         // 返回按钮
         document.getElementById('complete-train').addEventListener('click', () => {
