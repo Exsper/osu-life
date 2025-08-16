@@ -436,9 +436,9 @@ class GameController {
             playerScore.innerHTML = `
             <div class="score-bar">
                 ${Array.from({ length: roundToWin }, (_, i) =>
-                    `<div class="score-block player ${i < playerWin ? 'win' : 'empty'} 
+                `<div class="score-block player ${i < playerWin ? 'win' : 'empty'} 
                      ${i === playerWin ? 'current' : ''}"></div>`
-                ).join('')}
+            ).join('')}
                 </div>
             `;
             container.appendChild(playerScore);
@@ -449,9 +449,9 @@ class GameController {
             enemyScore.innerHTML = `
                 <div class="score-bar">
                     ${Array.from({ length: roundToWin }, (_, i) =>
-                    `<div class="score-block enemy ${i < enemyWin ? 'win' : 'empty'} 
+                `<div class="score-block enemy ${i < enemyWin ? 'win' : 'empty'} 
                             ${i === enemyWin ? 'current' : ''}"></div>`
-                ).join('')}
+            ).join('')}
             </div>
             `;
             container.appendChild(enemyScore);
@@ -805,9 +805,16 @@ class GameController {
 
         // 训练卡片
         document.querySelectorAll('.training-card').forEach(card => {
+            const type = card.dataset.type;
+            const tooltipId = `training-${type}-tooltip`;
+
             card.addEventListener('mouseover', (e) => {
-                const type = e.currentTarget.dataset.type;
                 this.updateTrainingCardTooltip(type);
+                document.getElementById(tooltipId).style.display = 'block';
+            });
+
+            card.addEventListener('mouseout', (e) => {
+                document.getElementById(tooltipId).style.display = 'none';
             });
         });
     }
@@ -931,5 +938,6 @@ class GameController {
         text += `疲劳度: +${FATIGUE_GAIN.TRAIN}`;
 
         document.getElementById(`training-${type}-tooltip`).textContent = text;
+        document.getElementById(`training-${type}-tooltip`).style.display = 'block';
     }
 }
