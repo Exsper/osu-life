@@ -216,10 +216,14 @@ body.evening {
 
 /* 训练界面 */
 .training-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 15px;
     margin-top: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .training-card {
@@ -229,6 +233,11 @@ body.evening {
     text-align: center;
     cursor: pointer;
     transition: all 0.3s;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .training-card:hover {
@@ -559,4 +568,17 @@ body.evening {
     left: calc(70% + 10px);
     transform: translateY(-50%);
     margin-left: 0;
+}
+
+#training-screen .tooltip-container {
+    position: relative;
+    width: 180px;
+    margin: 0;
+}
+
+#training-screen .tooltip-container .tooltip {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    margin-left: 10px;
 }
