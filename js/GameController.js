@@ -78,6 +78,11 @@ class GameController {
         } else if (screenId === 'match-intro') {
             this.updateMatchIntro();
         }
+        // 如果是比赛界面，更新状态栏
+        if (['roll-screen', 'ban-screen', 'pick-screen', 'mods-screen',
+            'result-screen', 'final-result'].includes(screenId)) {
+            this.updateMatchStatusBar();
+        }
     }
 
     showToast(message) {
@@ -106,7 +111,10 @@ class GameController {
         document.body.classList.remove("morning");
         document.body.classList.remove("afternoon");
         document.body.classList.remove("evening");
-        document.body.classList.add(this.game.timeSlot);
+        document.body.classList.remove("match");
+
+        if (this.game.isMatchDay() && this.game.timeSlot == "evening") document.body.classList.add("match");
+        else document.body.classList.add(this.game.timeSlot);
 
         // 更新玩家状态
         document.getElementById('money-stat').textContent = this.game.player.money.toFixed(0) + " G";
@@ -149,7 +157,7 @@ class GameController {
             const improvement = this.game.playerTrain(type);
             this.showToast(`训练成功! ${this.getTrainingName(type)} 提升了 ${improvement}`);
             this.updateTrainingScreen();
-            this.updateTrainingCardTooltip(type); 
+            this.updateTrainingCardTooltip(type);
             this.updateUI();
 
             // 如果训练点为0，自动点击完成训练按钮
@@ -182,22 +190,22 @@ class GameController {
     playerWork() {
         const gain = this.game.playerWork();
         this.showToast(`工作完成! 赚取了 ${gain} 金钱`);
-        this.updateWorkTooltip();
         this.nextTimeSlot();
+        this.updateWorkTooltip();
     }
 
     playerWebcast() {
         const result = this.game.playerWebcast();
         this.showToast(`直播完成! 赚取了 ${result.moneyGain} 金钱，并提升了技能`);
-        this.updateWebcastTooltip();
         this.nextTimeSlot();
+        this.updateWebcastTooltip();
     }
 
     playerRest() {
         const deltaFatigue = this.game.playerRest();
         this.showToast(`休息一会儿，疲劳度降低 ${-deltaFatigue}`);
-        this.updateRestTooltip(); 
         this.nextTimeSlot();
+        this.updateRestTooltip();
         this.updateUI();
     }
 
@@ -333,6 +341,81 @@ class GameController {
         this.game.startMatch();
     }
 
+    updateMatchStatusBar() {
+        if (!this.game.currentMatch) return;
+
+        const player = this.game.player;
+        const enemy = this.game.currentMatch.enemy;
+
+        // 状态栏HTML模板
+        const statusBarHTML = `
+        <div class="player-stats-column">
+        <div class="stats-column-title">玩家数据</div>
+        <div class="match-stats-grid">
+            <div class="match-stat-item">
+            <span class="match-stat-name">Aim:</span>
+            <span class="match-stat-value" id="match-player-aim">${player.aim.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">Spd:</span>
+            <span class="match-stat-value" id="match-player-spd">${player.spd.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">Acc:</span>
+            <span class="match-stat-value" id="match-player-acc">${player.acc.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">EZ熟练度:</span>
+            <span class="match-stat-value" id="match-player-ez">${player.prf_EZ.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">HD熟练度:</span>
+            <span class="match-stat-value" id="match-player-hd">${player.prf_HD.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">疲劳值:</span>
+            <span class="match-stat-value" id="match-player-fatigue">${player.fatigue.toFixed(0)}%</span>
+            </div>
+        </div>
+        </div>
+        <div class="opponent-stats-column">
+        <div class="stats-column-title">对手数据</div>
+        <div class="match-stats-grid">
+            <div class="match-stat-item">
+            <span class="match-stat-name">Aim:</span>
+            <span class="match-stat-value" id="match-opponent-aim">${enemy.aim.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">Spd:</span>
+            <span class="match-stat-value" id="match-opponent-spd">${enemy.spd.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">Acc:</span>
+            <span class="match-stat-value" id="match-opponent-acc">${enemy.acc.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">EZ熟练度:</span>
+            <span class="match-stat-value" id="match-opponent-ez">${enemy.prf_EZ.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">HD熟练度:</span>
+            <span class="match-stat-value" id="match-opponent-hd">${enemy.prf_HD.toFixed(2)}★</span>
+            </div>
+            <div class="match-stat-item">
+            <span class="match-stat-name">疲劳值:</span>
+            <span class="match-stat-value" id="match-opponent-fatigue">${enemy.fatigue.toFixed(0)}%</span>
+            </div>
+        </div>
+        </div>
+    `;
+
+        // 更新所有比赛界面的状态栏
+        document.querySelectorAll('.match-status-bar').forEach(bar => {
+            bar.innerHTML = statusBarHTML;
+        });
+    }
+
+
     updateMatchIntro() {
         const opponent = this.game.currentMatch.enemy;
         document.getElementById('match-name').textContent = this.game.getMatchName();
@@ -373,6 +456,7 @@ class GameController {
     }
 
     updateBanScreen() {
+        this.updateMatchStatusBar();
         document.getElementById('ban-remaining').textContent =
             this.game.currentMatch.banSlots - this.game.currentMatch.playerUsedBan;
 
@@ -445,6 +529,7 @@ class GameController {
     }
 
     updatePickScreen() {
+        this.updateMatchStatusBar();
         document.getElementById('pick-turn').textContent =
             this.game.currentMatch.currentTurn === 'player' ? '你的回合' : '对手回合';
 
@@ -701,7 +786,7 @@ class GameController {
         text += `------------------\n`;
         text += `已工作次数: ${player.workCount}\n`;
         text += `基础工资: +${baseGain.toFixed(0)}\n`;
-        text += `疲劳度惩罚: x${penalty.toFixed(1)}\n`;
+        if (penalty < 1) text += `疲劳度惩罚: x${penalty.toFixed(1)}\n`;
         if (isEvening) {
             text += `夜班奖励: x1.5\n`;
         }
@@ -726,7 +811,7 @@ class GameController {
         text += `------------------\n`;
         text += `游戏水平: ${playerLevel}★\n`;
         text += `基础工资: +${baseMoneyGain.toFixed(0)}\n`;
-        text += `疲劳度惩罚: x${penalty.toFixed(1)}\n`;
+        if (penalty < 1) text += `疲劳度惩罚: x${penalty.toFixed(1)}\n`;
         if (isEvening) {
             text += `夜晚奖励: x2.0\n`;
         }

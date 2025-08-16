@@ -21,7 +21,6 @@ body {
     background-color: var(--background);
     color: var(--text);
     height: 100vh;
-    overflow: hidden;
     position: relative;
 }
 
@@ -35,6 +34,10 @@ body.afternoon {
 
 body.evening {
     background-color: #502c46 !important;
+}
+
+body.match {
+    background-color: var(--background);
 }
 
 /* 弹窗 */
@@ -317,6 +320,82 @@ body.evening {
     color: var(--accent);
 }
 
+/* 比赛状态栏样式 */
+.match-status-bar {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    z-index: 90;
+    border-bottom: 2px solid var(--primary);
+    height: 140px;
+}
+
+.player-stats-column,
+.opponent-stats-column {
+    width: 48%;
+    background: var(--light-bg);
+    border-radius: 8px;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+.stats-column-title {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--highlight);
+    font-size: 1rem;
+}
+
+.match-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+    font-size: 0.85rem;
+}
+
+.match-stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+    border-bottom: 1px solid white;
+}
+
+.match-stat-name {
+    font-weight: bold;
+}
+
+.match-stat-value {
+    color: var(--highlight);
+}
+
+/* 调整比赛界面内容位置，避免被状态栏遮挡 */
+#roll-screen,
+#ban-screen,
+#pick-screen,
+#mods-screen,
+#result-screen,
+#final-result {
+    padding-top: 200px !important;
+    height: calc(100% - 200px);
+}
+
+/* 调整特定界面的内容容器 */
+#roll-screen>div:first-child,
+#ban-screen>div:first-child,
+#pick-screen>div:first-child,
+#mods-screen>div:first-child,
+#result-screen>div:first-child,
+#final-result>div:first-child {
+    margin-top: 0;
+}
+
+/* 赛图样式 */
 .beatmaps-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
