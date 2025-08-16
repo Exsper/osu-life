@@ -137,8 +137,14 @@ class Beatmap {
         this.maxcombo_rating = baseStar + Math.random() * 4 - 2;
         if (this.maxcombo_rating <= 1) this.maxcombo_rating = 1;
 
+        if (poolType === "NM") {
+            // 难度稍微提升一点
+            this.basic_aim_rating = baseStar + Math.random();
+            this.basic_spd_rating = baseStar + Math.random();
+            this.basic_acc_rating = baseStar + Math.random();
+            this.maxcombo_rating = baseStar + Math.random();
+        }
         /* 因为mods会改变难度，所以谱面原始难度不做要求
-        if (poolType === "NM") { }
         else if (poolType === "HD") { }
         else if (poolType === "EZ") { }
         else if (poolType === "FM") { }

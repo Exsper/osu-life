@@ -205,19 +205,19 @@ class Player {
         // 偏科调整
         let ran = Math.floor(Math.random() * 8);
         switch (ran) {
-            case 0: { this.aim *= 1.5; break; }
-            case 1: { this.spd *= 1.5; break; }
-            case 2: { this.acc *= 1.5; break; }
-            case 3: { this.men *= 1.5; break; }
-            case 4: { this.prf_EZ *= 1.5; break; }
-            case 5: { this.prf_HD *= 1.5; break; }
+            case 0: { this.aim *= 1.8; break; }
+            case 1: { this.spd *= 1.8; break; }
+            case 2: { this.acc *= 1.8; break; }
+            case 3: { this.men *= 1.8; break; }
+            case 4: { this.prf_EZ *= 1.8; break; }
+            case 5: { this.prf_HD *= 1.8; break; }
             case 6: {
-                this.aim *= 1.1;
-                this.spd *= 1.1;
-                this.acc *= 1.1;
-                this.men *= 1.1;
-                this.prf_EZ *= 1.1;
-                this.prf_HD *= 1.1;
+                this.aim *= 1.2;
+                this.spd *= 1.2;
+                this.acc *= 1.2;
+                this.men *= 1.2;
+                this.prf_EZ *= 1.2;
+                this.prf_HD *= 1.2;
                 break;
             }
             // case 7 保持原样

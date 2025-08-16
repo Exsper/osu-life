@@ -237,10 +237,10 @@ class Match {
         const poolScores = {
             HR: this.enemy.aim,
             DT: this.enemy.spd,
-            EZ: this.enemy.acc,
-            HD: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
+            EZ: (this.enemy.acc + this.enemy.prf_EZ * 3) / 4,
+            HD: (this.enemy.aim + this.enemy.spd + this.enemy.acc + this.enemy.prf_HD * 9) / 12,
             NM: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
-            FM: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
+            FM: (this.enemy.aim + this.enemy.spd + this.enemy.acc + this.enemy.prf_EZ * 3 + this.enemy.prf_HD * 3) / 9,
             // TB: this.enemy.men  // 不允许ban TB
         };
 
@@ -309,10 +309,10 @@ class Match {
         const poolScores = {
             HR: this.enemy.aim,
             DT: this.enemy.spd,
-            EZ: this.enemy.acc,
-            HD: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
+            EZ: (this.enemy.acc + this.enemy.prf_EZ * 3) / 4,
+            HD: (this.enemy.aim + this.enemy.spd + this.enemy.acc + this.enemy.prf_HD * 9) / 12,
             NM: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
-            FM: (this.enemy.aim + this.enemy.spd + this.enemy.acc) / 3,
+            FM: (this.enemy.aim + this.enemy.spd + this.enemy.acc + this.enemy.prf_EZ * 3 + this.enemy.prf_HD * 3) / 9,
             // TB: this.enemy.men
         };
 
@@ -400,9 +400,15 @@ class Match {
         switch (beatmap.poolType) {
             case 'HR':
                 finalMods.HR = true;
+                if (this.enemy.prf_HD > 1.5) {
+                    finalMods.HD = true; // 如果HD熟练度高，选择HD
+                }
                 break;
             case 'DT':
                 finalMods.DT = true;
+                if (this.enemy.prf_HD > 1.5) {
+                    finalMods.HD = true; // 如果HD熟练度高，选择HD
+                }
                 break;
             case 'EZ':
                 finalMods.EZ = true;
@@ -412,8 +418,7 @@ class Match {
                 break;
             case 'FM':
             case 'TB':
-                // 对手AI: 根据属性选择mods
-                if (this.enemy.aim > this.enemy.spd && this.enemy.aim > this.enemy.acc) {
+                if (this.enemy.aim > (beatmap.basic_aim_rating * 1.5)) {
                     finalMods.HR = true; // 如果aim高，选择HR
                 }
                 if (this.enemy.prf_HD > 1.5) {
@@ -481,7 +486,7 @@ class Match {
         // 准备下一回合
         this.currentStep = "pick";
         // 切换选图顺序
-        if (this.currentTurn === "enemy" ) this.currentTurn = "player";
+        if (this.currentTurn === "enemy") this.currentTurn = "player";
         else this.currentTurn = "enemy";
 
         return {
