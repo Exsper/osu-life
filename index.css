@@ -205,11 +205,13 @@ body.evening {
 }
 
 #fatigue-stat {
-  color: #f39c12; /* 默认橙色 */
+    color: #f39c12;
+    /* 默认橙色 */
 }
 
 #fatigue-stat[data-level="high"] {
-  color: #e74c3c; /* 重度疲劳红色 */
+    color: #e74c3c;
+    /* 重度疲劳红色 */
 }
 
 /* 训练界面 */
@@ -339,11 +341,13 @@ body.evening {
 }
 
 .beatmap-card.player-action {
-    border: 3px solid #3498db !important; /* 蓝色边框表示玩家操作 */
+    border: 3px solid #3498db !important;
+    /* 蓝色边框表示玩家操作 */
 }
 
 .beatmap-card.enemy-action {
-    border: 3px solid #e74c3c !important; /* 红色边框表示对手操作 */
+    border: 3px solid #e74c3c !important;
+    /* 红色边框表示对手操作 */
 }
 
 .beatmap-type {
@@ -395,7 +399,8 @@ body.evening {
 .mod-btn.disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    pointer-events: none; /* 阻止所有鼠标事件 */
+    pointer-events: none;
+    /* 阻止所有鼠标事件 */
     background: var(--light-bg) !important;
     border-color: #777 !important;
 }
@@ -453,7 +458,7 @@ body.evening {
     flex-direction: column;
 }
 
-.day-transition > div {
+.day-transition>div {
     align-items: center;
 }
 
@@ -486,4 +491,34 @@ body.evening {
     .screen-title {
         font-size: 1.8rem;
     }
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    white-space: pre-line;
+    z-index: 1000;
+    width: max-content;
+    max-width: 300px;
+    text-align: left;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 5px;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.tooltip-container:hover .tooltip {
+    display: block;
 }

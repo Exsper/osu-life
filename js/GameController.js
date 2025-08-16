@@ -9,6 +9,7 @@ class GameController {
         this.currentScreen = 'main-menu';
         this.initEventListeners();
         this.updateUI();
+        this.setupTooltips();
     }
 
     initEventListeners() {
@@ -641,5 +642,160 @@ class GameController {
         this.nextTimeSlot();
         this.updateUI();
         this.showScreen('main-menu');
+    }
+
+    setupTooltips() {
+        // 训练按钮
+        document.getElementById('train-btn').addEventListener('mouseover', () => {
+            this.updateTrainTooltip();
+        });
+
+        // 工作按钮
+        document.getElementById('work-btn').addEventListener('mouseover', () => {
+            this.updateWorkTooltip();
+        });
+
+        // 直播按钮
+        document.getElementById('webcast-btn').addEventListener('mouseover', () => {
+            this.updateWebcastTooltip();
+        });
+
+        // 休息按钮
+        document.getElementById('rest-btn').addEventListener('mouseover', () => {
+            this.updateRestTooltip();
+        });
+
+        // 商店按钮
+        document.getElementById('shop-btn').addEventListener('mouseover', () => {
+            this.updateShopTooltip();
+        });
+
+        // 训练卡片
+        document.querySelectorAll('.training-card').forEach(card => {
+            card.addEventListener('mouseover', (e) => {
+                const type = e.currentTarget.dataset.type;
+                this.updateTrainingCardTooltip(type);
+            });
+        });
+    }
+
+    // 训练按钮提示
+    updateTrainTooltip() {
+        const tooltip = document.getElementById('train-tooltip');
+        tooltip.textContent = `训练点数: +2\n------------------\n进入选择训练项目`;
+    }
+
+    // 工作按钮提示
+    updateWorkTooltip() {
+        const player = this.game.player;
+        const baseGain = 50 + 25 * Math.floor(player.workCount / 5);
+        const penalty = getFatiguePenalty(player.fatigue);
+        const isEvening = this.game.timeSlot === 'evening';
+        const actualGain = baseGain * penalty * (isEvening ? 1.5 : 1);
+
+        let text = `原始金钱: ${player.money.toFixed(0)} G\n`;
+        text += `------------------\n`;
+        text += `已工作次数: ${player.workCount}\n`;
+        text += `基础工资: +${baseGain.toFixed(0)}\n`;
+        text += `疲劳度惩罚: x${penalty.toFixed(1)}\n`;
+        if (isEvening) {
+            text += `夜班奖励: x1.5\n`;
+        }
+        text += `------------------\n`;
+        text += `最终金钱: ${actualGain.toFixed(0)} G\n`;
+        text += `------------------\n`;
+        text += `疲劳度: +${FATIGUE_GAIN.WORK}`;
+
+        document.getElementById('work-tooltip').textContent = text;
+    }
+
+    // 直播按钮提示
+    updateWebcastTooltip() {
+        const player = this.game.player;
+        const playerLevel = Math.floor((player.aim + player.spd + player.acc + player.prf_EZ + player.prf_HD) / 5);
+        const baseMoneyGain = 10 + 5 * Math.floor(playerLevel / 2);
+        const penalty = getFatiguePenalty(player.fatigue);
+        const isEvening = this.game.timeSlot === 'evening';
+        const actualGain = baseMoneyGain * penalty * (isEvening ? 2 : 1);
+
+        let text = `原始金钱: ${player.money.toFixed(0)} G\n`;
+        text += `------------------\n`;
+        text += `游戏水平: ${playerLevel}★\n`;
+        text += `基础工资: +${baseMoneyGain.toFixed(0)}\n`;
+        text += `疲劳度惩罚: x${penalty.toFixed(1)}\n`;
+        if (isEvening) {
+            text += `夜晚奖励: x2.0\n`;
+        }
+        text += `------------------\n`;
+        text += `最终金钱: ${actualGain.toFixed(0)} G\n`;
+        text += `------------------\n`;
+        text += `疲劳度: +${FATIGUE_GAIN.WEBCAST}`;
+
+        document.getElementById('webcast-tooltip').textContent = text;
+    }
+
+    // 休息按钮提示
+    updateRestTooltip() {
+        let text = `当前疲劳度: ${this.game.player.fatigue}%\n`;
+        text += `------------------\n`;
+        text += `休息效果: -${-FATIGUE_GAIN.REST}\n`;
+        text += `------------------\n`;
+        text += `最终疲劳度: ${Math.max(0, this.game.player.fatigue + FATIGUE_GAIN.REST)}%`;
+
+        document.getElementById('rest-tooltip').textContent = text;
+    }
+
+    // 商店按钮提示
+    updateShopTooltip() {
+        let text = `进入商店升级设备`;
+
+        document.getElementById('shop-tooltip').textContent = text;
+    }
+
+    // 训练卡片提示
+    updateTrainingCardTooltip(type) {
+        let playerItem = type;
+        if (type === "ez") playerItem = "prf_EZ";
+        else if (type === "hd") playerItem = "prf_HD";
+        const player = this.game.player;
+        const trainedCount = player[`${playerItem}_trained`];
+
+        // 计算基础提升值
+        const baseImprove = trainedCount <= 0 ? 1 : 0.526 * Math.pow(0.95, trainedCount);
+
+        // 计算外设加成
+        const impbonus = 1 +
+            (player.keyboardLevel - 1) * 0.3 +
+            (player.monitorLevel - 1) * 0.2 +
+            (player.pcLevel - 1) * 0.1;
+
+        const finalImprove = baseImprove * impbonus;
+
+        // 获取属性当前值
+        const currentValue = player[playerItem].toFixed(2);
+        const newValue = (player[playerItem] + finalImprove).toFixed(2);
+
+        // 获取训练类型名称
+        const typeNames = {
+            aim: '精度(Aim)',
+            spd: '速度(Spd)',
+            acc: '准度(Acc)',
+            men: '心态(Men)',
+            ez: 'EZ Mod熟练度',
+            hd: 'HD Mod熟练度'
+        };
+
+        let text = `${typeNames[type] || type}\n`;
+        text += `------------------\n`;
+        text += `原始数值: ${currentValue}\n`;
+        text += `已训练次数: ${trainedCount}\n`;
+        text += `基础提升: +${baseImprove.toFixed(2)}\n`;
+        text += `外设加成: x${impbonus.toFixed(2)}\n`;
+        text += `------------------\n`;
+        text += `最终数值: ${newValue}\n`;
+        text += `------------------\n`;
+        text += `疲劳度: +${FATIGUE_GAIN.TRAIN}`;
+
+        document.getElementById(`training-${type}-tooltip`).textContent = text;
     }
 }

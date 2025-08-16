@@ -78,11 +78,26 @@
             </div>
         </div>
 
-        <button class="btn" id="train-btn">训练技能</button>
-        <button class="btn" id="work-btn">打工赚钱</button>
-        <button class="btn" id="webcast-btn">直播活动</button>
-        <button class="btn" id="rest-btn">休息</button>
-        <button class="btn btn-warning" id="shop-btn">升级设备</button>
+        <div class="tooltip-container">
+            <button class="btn" id="train-btn">训练技能</button>
+            <div class="tooltip" id="train-tooltip"></div>
+        </div>
+        <div class="tooltip-container">
+            <button class="btn" id="work-btn">打工赚钱</button>
+            <div class="tooltip" id="work-tooltip"></div>
+        </div>
+        <div class="tooltip-container">
+            <button class="btn" id="webcast-btn">直播活动</button>
+            <div class="tooltip" id="webcast-tooltip"></div>
+        </div>
+        <div class="tooltip-container">
+            <button class="btn" id="rest-btn">休息</button>
+            <div class="tooltip" id="rest-tooltip"></div>
+        </div>
+        <div class="tooltip-container">
+            <button class="btn btn-warning" id="shop-btn">升级设备</button>
+            <div class="tooltip" id="shop-tooltip"></div>
+        </div>
     </div>
 
     <!-- 训练界面 -->
@@ -91,36 +106,61 @@
         <p style="text-align: center; margin-bottom: 20px;">剩余训练点数: <span id="remaining-points">2</span></p>
 
         <div class="training-grid">
-            <div class="training-card" data-type="aim">
-                <div class="training-icon">🎯</div>
-                <h3>精度训练</h3>
-                <p>提高瞄准能力</p>
+
+            <div class="tooltip-container">
+                <div class="training-card" data-type="aim">
+                    <div class="training-icon">🎯</div>
+                    <h3>精度训练</h3>
+                    <p>提高瞄准能力</p>
+                </div>
+                <div class="tooltip" id="training-aim-tooltip"></div>
             </div>
-            <div class="training-card" data-type="spd">
-                <div class="training-icon">⚡</div>
-                <h3>速度训练</h3>
-                <p>提高操作速度</p>
+
+            <div class="tooltip-container">
+                <div class="training-card" data-type="spd">
+                    <div class="training-icon">⚡</div>
+                    <h3>速度训练</h3>
+                    <p>提高操作速度</p>
+                </div>
+                <div class="tooltip" id="training-spd-tooltip"></div>
             </div>
-            <div class="training-card" data-type="acc">
-                <div class="training-icon">🎯</div>
-                <h3>准度训练</h3>
-                <p>提高击打准确度</p>
+
+            <div class="tooltip-container">
+                <div class="training-card" data-type="acc">
+                    <div class="training-icon">🎯</div>
+                    <h3>准度训练</h3>
+                    <p>提高击打准确度</p>
+                </div>
+                <div class="tooltip" id="training-acc-tooltip"></div>
             </div>
-            <div class="training-card" data-type="men">
-                <div class="training-icon">🧠</div>
-                <h3>心态训练</h3>
-                <p>提高比赛抗压能力</p>
+
+            <div class="tooltip-container">
+                <div class="training-card" data-type="men">
+                    <div class="training-icon">🧠</div>
+                    <h3>心态训练</h3>
+                    <p>提高比赛抗压能力</p>
+                </div>
+                <div class="tooltip" id="training-men-tooltip"></div>
             </div>
-            <div class="training-card" data-type="ez">
-                <div class="training-icon">😌</div>
-                <h3>EZ Mod训练</h3>
-                <p>提高EZ Mod熟练度</p>
+
+            <div class="tooltip-container">
+                <div class="training-card" data-type="ez">
+                    <div class="training-icon">😌</div>
+                    <h3>EZ Mod训练</h3>
+                    <p>提高EZ Mod熟练度</p>
+                </div>
+                <div class="tooltip" id="training-ez-tooltip"></div>
             </div>
-            <div class="training-card" data-type="hd">
-                <div class="training-icon">👁️</div>
-                <h3>HD Mod训练</h3>
-                <p>提高HD Mod熟练度</p>
+
+            <div class="tooltip-container">
+                <div class="training-card" data-type="hd">
+                    <div class="training-icon">👁️</div>
+                    <h3>HD Mod训练</h3>
+                    <p>提高HD Mod熟练度</p>
+                </div>
+                <div class="tooltip" id="training-hd-tooltip"></div>
             </div>
+
         </div>
 
         <button class="btn btn-danger" id="complete-train">完成训练</button>
