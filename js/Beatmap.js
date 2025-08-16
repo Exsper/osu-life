@@ -127,14 +127,14 @@ class Beatmap {
      */
     init(baseStar, poolType) {
         this.poolType = poolType;
-        // 各属性在[-2, +2]浮动
-        this.basic_aim_rating = baseStar + Math.random() * 4 - 2;
+        // 各属性在[0, +4]浮动
+        this.basic_aim_rating = baseStar + Math.random() * 4;
         if (this.basic_aim_rating < 0) this.basic_aim_rating = 0;
-        this.basic_spd_rating = baseStar + Math.random() * 4 - 2;
+        this.basic_spd_rating = baseStar + Math.random() * 4;
         if (this.basic_spd_rating < 0) this.basic_spd_rating = 0;
-        this.basic_acc_rating = baseStar + Math.random() * 4 - 2;
+        this.basic_acc_rating = baseStar + Math.random() * 4;
         if (this.basic_acc_rating < 0) this.basic_acc_rating = 0;
-        this.maxcombo_rating = baseStar + Math.random() * 4 - 2;
+        this.maxcombo_rating = baseStar + Math.random() * 4;
         if (this.maxcombo_rating <= 1) this.maxcombo_rating = 1;
 
         if (poolType === "NM") {

@@ -256,7 +256,7 @@ class Match {
 
         // 在该图池中随机ban一张图
         const weakBeatmaps = this[`pool_${weakestPool}`].filter(b => !b.banned && !b.picked);
-        if (weakBeatmaps.length > 0) {
+        if (weakBeatmaps.length > 0 || Math.random() > 0.5) {
             const randomIndex = Math.floor(Math.random() * weakBeatmaps.length);
             weakBeatmaps[randomIndex].banned = true;
             weakBeatmaps[randomIndex].bannedBy = 'enemy';
@@ -464,12 +464,6 @@ class Match {
         this.nowRound++;
         beatmap.playing = false;
 
-        // 检查是否进入赛点（双方都差一分获胜）
-        if (this.playerWinRound === this.roundToWin - 1 &&
-            this.enemyWinRound === this.roundToWin - 1) {
-            this.isTieBreak = true;
-        }
-
         // 检查比赛是否结束
         if (this.playerWinRound >= this.roundToWin || this.enemyWinRound >= this.roundToWin) {
             this.ended = true;
@@ -529,6 +523,12 @@ class Match {
         }
 
         if (this.currentStep === 'pick') {
+            // 检查是否进入赛点（双方都差一分获胜）
+            if (this.playerWinRound === this.roundToWin - 1 &&
+                this.enemyWinRound === this.roundToWin - 1) {
+                this.isTieBreak = true;
+            }
+
             // 检查是否进入赛点（强制TB）
             if (this.isTieBreak) {
                 // 强制选择TB图

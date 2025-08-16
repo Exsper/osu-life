@@ -195,12 +195,8 @@ class Player {
         this.spd = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
         this.acc = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
         this.men = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
-
-        // 为对手添加 mod 熟练度
-        this.prf_EZ = baseStar - 1 + Math.random() * 2;
-        if (this.prf_EZ < 1) this.prf_EZ = 1;
-        this.prf_HD = baseStar - 1 + Math.random() * 2;
-        if (this.prf_HD < 1) this.prf_HD = 1;
+        this.prf_EZ = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
+        this.prf_HD = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
 
         // 偏科调整
         let ran = Math.floor(Math.random() * 8);
