@@ -207,6 +207,34 @@ body.match {
     color: var(--highlight);
 }
 
+/* osu ID编辑框样式 */
+.osu-id-edit {
+    background: var(--light-bg);
+    color: var(--text);
+    border: 1px solid var(--highlight);
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 1rem;
+    width: 100px;
+    margin-left: 5px;
+}
+
+/* osu ID悬停效果 */
+#osu-id-display {
+    cursor: pointer;
+    position: relative;
+    padding-right: 15px;
+}
+
+#osu-id-display:hover::after {
+    content: "✎";
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
 #fatigue-stat {
     color: #f39c12;
     /* 默认橙色 */

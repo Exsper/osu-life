@@ -10,6 +10,7 @@ class GameController {
         this.initEventListeners();
         this.updateUI();
         this.setupTooltips();
+        this.setupOsuIdEdit();
     }
 
     initEventListeners() {
@@ -76,6 +77,51 @@ class GameController {
         });
     }
 
+    setupOsuIdEdit() {
+        const display = document.getElementById('osu-id-display');
+        const input = document.getElementById('osu-id-edit');
+
+        // 点击显示区域时显示输入框
+        display.addEventListener('click', () => {
+            display.style.display = 'none';
+            input.style.display = 'inline-block';
+            input.value = display.textContent;
+            input.focus();
+            input.select();
+        });
+
+        // 输入框失去焦点时保存
+        input.addEventListener('blur', () => {
+            this.saveOsuId(input.value);
+        });
+
+        // 按回车键保存
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.saveOsuId(input.value);
+            }
+        });
+    }
+
+    saveOsuId(newId) {
+        const display = document.getElementById('osu-id-display');
+        const input = document.getElementById('osu-id-edit');
+
+        // 验证并保存新ID
+        if (newId.trim() !== '') {
+            display.textContent = newId;
+
+            // 保存到localStorage
+            localStorage.setItem('osuId', newId);
+
+            this.showToast(`osu ID已更新为: ${newId}`);
+        }
+
+        // 恢复显示状态
+        input.style.display = 'none';
+        display.style.display = 'inline';
+    }
+
     showScreen(screenId) {
         // 隐藏当前屏幕
         document.querySelectorAll('.screen').forEach(screen => {
@@ -132,6 +178,12 @@ class GameController {
 
         if (this.game.isMatchDay() && this.game.timeSlot == "evening") document.body.classList.add("match");
         else document.body.classList.add(this.game.timeSlot);
+
+        // 加载保存的osu ID
+        const savedId = localStorage.getItem('osuId');
+        if (savedId) {
+            document.getElementById('osu-id-display').textContent = savedId;
+        }
 
         // 更新玩家状态
         document.getElementById('money-stat').textContent = this.game.player.money.toFixed(0) + " G";
