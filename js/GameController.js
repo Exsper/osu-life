@@ -81,6 +81,7 @@ class GameController {
                 if (!btn.disabled) {
                     btn.classList.toggle('active');
                 }
+                this.updateMapStats();
             });
         });
     }
@@ -719,9 +720,21 @@ class GameController {
             // 更新mod选择界面
             document.getElementById('selected-map-name').textContent = `谱面 #${currentMap.id}`;
             document.getElementById('map-type').textContent = currentMap.poolType;
-            document.getElementById('map-aim').textContent = currentMap.basic_aim_rating.toFixed(2);
-            document.getElementById('map-spd').textContent = currentMap.basic_spd_rating.toFixed(2);
-            document.getElementById('map-acc').textContent = currentMap.basic_acc_rating.toFixed(2);
+            // 应用图池mod调整
+            let mods = { HR: false, DT: false, HD: false, EZ: false };
+            switch (currentMap.poolType) {
+                case "DT": { mods.DT = true; break; }
+                case "HR": { mods.HR = true; break; }
+                case "HD": { mods.HD = true; break; }
+                case "EZ": { mods.EZ = true; break; }
+            }
+            let ratings = currentMap.getRatingsWithMods(mods);
+            let aim_rating = ratings.aim_rating;
+            let spd_rating = ratings.spd_rating;
+            let acc_rating = ratings.acc_rating;
+            document.getElementById('map-aim').textContent = aim_rating.toFixed(2);
+            document.getElementById('map-spd').textContent = spd_rating.toFixed(2);
+            document.getElementById('map-acc').textContent = acc_rating.toFixed(2);
             document.getElementById('map-combo').textContent = currentMap.maxcombo_rating.toFixed(2);
 
             // 获取mod按钮
@@ -776,6 +789,30 @@ class GameController {
 
             // 对手自动选择mods
             this.game.advanceMatch();
+        }
+    }
+
+    updateMapStats() {
+        // 获取当前选择mods
+        const hrSelected = document.querySelector('.mod-btn[data-mod="hr"]').classList.contains('active');
+        const hdSelected = document.querySelector('.mod-btn[data-mod="hd"]').classList.contains('active');
+        const currentMap = this.game.currentMatch.currentBeatmap;
+        if (currentMap) {
+            // 应用选择mods和图池mod调整
+            let mods = { HR: hrSelected, DT: false, HD: hdSelected, EZ: false };
+            switch (currentMap.poolType) {
+                case "DT": { mods.DT = true; break; }
+                // case "HR": { mods.HR = true; break; }
+                // case "HD": { mods.HD = true; break; }
+                case "EZ": { mods.EZ = true; break; }
+            }
+            let ratings = currentMap.getRatingsWithMods(mods);
+            let aim_rating = ratings.aim_rating;
+            let spd_rating = ratings.spd_rating;
+            let acc_rating = ratings.acc_rating;
+            document.getElementById('map-aim').textContent = aim_rating.toFixed(2);
+            document.getElementById('map-spd').textContent = spd_rating.toFixed(2);
+            document.getElementById('map-acc').textContent = acc_rating.toFixed(2);
         }
     }
 

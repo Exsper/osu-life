@@ -353,7 +353,7 @@ class Match {
         if (!beatmap || bid !== this.currentBeatmap.id || !beatmap.playing) throw "谱面出错";
 
         // 根据图池类型处理强制mod
-        const finalMods = { HR: false, DT: false, HD: false, EZ: false };
+        const finalMods = { HR: mods.HR, DT: false, HD: mods.HD, EZ: false };
 
         switch (beatmap.poolType) {
             case 'HR':

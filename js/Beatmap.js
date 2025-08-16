@@ -29,6 +29,11 @@ class Beatmap {
          */
         this.maxcombo_rating = 1;
 
+        /** 每个bonus=200分，加入随机bonus，防止双方都是满分
+         * @type {number}
+         */
+        this.bonusScoreCounts = 10;
+
         /** 该谱面已被选手ban掉
          * @type {boolean}
          */
@@ -132,6 +137,7 @@ class Beatmap {
         this.maxcombo_rating = baseStar + Math.random() * 4 - 2;
         if (this.maxcombo_rating <= 1) this.maxcombo_rating = 1;
 
+        /* 因为mods会改变难度，所以谱面原始难度不做要求
         if (poolType === "NM") { }
         else if (poolType === "HD") { }
         else if (poolType === "EZ") { }
@@ -148,7 +154,8 @@ class Beatmap {
                 this.basic_spd_rating = Math.max(this.basic_aim_rating, this.basic_spd_rating, this.basic_acc_rating) + Math.random() * 2;
             }
         }
-        else if (poolType === "TB") {
+        */
+        if (poolType === "TB") {
             // 难度均衡且较高，Combo要很高
             this.basic_aim_rating = baseStar + Math.random() * 2;
             this.basic_spd_rating = baseStar + Math.random() * 2;
@@ -228,17 +235,31 @@ class Beatmap {
         // 解构赋值获取三个值
         const [min, mid, max] = sorted;
         // 按权重计算并求和，算出模拟成绩
-        return (min * 0.5 + mid * 0.3 + max * 0.2) * maxScore;
+        let totalScore = (min * 0.5 + mid * 0.3 + max * 0.2) * maxScore;
+        // bonus
+        let bonusScore = 200 * Math.floor(Math.random() * (this.bonusScoreCounts + 1));
+        bonusScore *= (maxScore / this.basic_maxScore);
+        return totalScore + bonusScore;
     }
 
-    // TODO：这里应该改为图池强制mod加成后的数值
     getInnerHTML() {
+        let mods = { HR: false, DT: false, HD: false, EZ: false };
+        switch (this.poolType) {
+            case "DT": { mods.DT = true; break; }
+            case "HR": { mods.HR = true; break; }
+            case "HD": { mods.HD = true; break; }
+            case "EZ": { mods.EZ = true; break; }
+        }
+        let ratings = this.getRatingsWithMods(mods);
+        let aim_rating = ratings.aim_rating;
+        let spd_rating = ratings.spd_rating;
+        let acc_rating = ratings.acc_rating;
         return `<div class="beatmap-type">${this.poolType}</div>
                 <div class="beatmap-name">谱面 #${this.id}</div>
                 <div class="beatmap-stats">
-                    <div>CS: ${this.basic_aim_rating.toFixed(2)} ★</div>
-                    <div>BPM: ${this.basic_spd_rating.toFixed(2)} ★</div>
-                    <div>OD: ${this.basic_acc_rating.toFixed(2)} ★</div>
+                    <div>CS: ${aim_rating.toFixed(2)} ★</div>
+                    <div>BPM: ${spd_rating.toFixed(2)} ★</div>
+                    <div>OD: ${acc_rating.toFixed(2)} ★</div>
                     <div>Combo: ${this.maxcombo_rating.toFixed(2)} ★</div>
                 </div>
             `;
