@@ -3,9 +3,9 @@ class Shop {
      * 商店
      */
     constructor() {
-        this.keyboardCost = [100, 200, 400, 800, 1600];
-        this.monitorCost = [200, 400, 800, 1600];
-        this.pcCost = [200, 400, 800, 1600];
+        this.keyboardCost = [50, 100, 200, 400, 800];
+        this.monitorCost = [100, 150, 250, 400];
+        this.pcCost = [100, 200, 400, 600];
     }
 
     /**

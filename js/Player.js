@@ -133,11 +133,11 @@ class Player {
         if (this.trainingPoints <= 0) return 0;
         /**
         * 训练次数越多，再次训练收益越小
-        * 第1次提升1，后续每次训练提升=0.55*0.9^N
+        * 第1次提升1，后续每次训练提升=0.6*0.85^N
         */
         const calImprove = (trainedCount) => {
             if (trainedCount <= 0) return 1;
-            return 0.55 * Math.pow(0.9, trainedCount);
+            return 0.6 * Math.pow(0.85, trainedCount);
         };
 
         // 外设对训练提升
