@@ -1,3 +1,18 @@
+// 活动增加的疲劳度
+const FATIGUE_GAIN = {
+    TRAIN: 10,    // 训练
+    WORK: 30,     // 工作
+    WEBCAST: 15,  // 直播
+    REST: -50     // 休息（减少疲劳度）
+};
+
+// 疲劳度惩罚系数
+function getFatiguePenalty(fatigue) {
+    if (fatigue <= 50) return 1.0;     // 无惩罚
+    if (fatigue <= 80) return 0.8;     // 轻度疲劳，效率80%
+    return 0.5;                        // 重度疲劳，效率50%
+}
+
 class Player {
     /**
      * 玩家或电脑玩家
@@ -100,6 +115,13 @@ class Player {
          * @type {number}
          */
         this.pcLevel = 1;
+
+        /** 玩家疲劳度 (0-100) \
+         * 训练、直播小幅增加疲劳度，工作大幅增加疲劳度 \
+         * 疲劳度过高影响工作、直播效率，也会影响比赛水平
+         * @type {number}
+         */
+        this.fatigue = 0;
     }
 
     /**
@@ -154,6 +176,10 @@ class Player {
                 break;
         }
 
+        // 增加疲劳度
+        this.fatigue += FATIGUE_GAIN.TRAIN;
+        if (this.fatigue > 100) this.fatigue = 100;
+
         this.trainingPoints--;
         return improvement.toFixed(2);
     }
@@ -173,6 +199,9 @@ class Player {
         // 为对手添加 mod 熟练度
         this.prf_EZ = 1 + Math.random() * 2;
         this.prf_HD = 1 + Math.random() * 2;
+
+        // 设置对手的疲劳度
+        this.fatigue = Math.random() * 50;
     }
 
     /**
@@ -187,13 +216,20 @@ class Player {
      * 选择工作活动，获得一定金钱
      */
     goWork(timeSlot) {
-        let baseGain = 50 + 25 * Math.floor(this.workCount / 5);
+        // 应用疲劳度惩罚
+        const penalty = getFatiguePenalty(this.fatigue);
+
+        let baseGain = (50 + 25 * Math.floor(this.workCount / 5)) * penalty;
         let gain = baseGain;
 
         // 晚上工作获得50%额外奖励
         if (timeSlot === 'evening') {
             gain = gain * 1.5;
         }
+
+        // 增加疲劳度
+        this.fatigue += FATIGUE_GAIN.WORK;
+        if (this.fatigue > 100) this.fatigue = 100;
 
         this.money += gain;
         this.workCount += 1;
@@ -204,8 +240,11 @@ class Player {
      * 选择直播活动，获得一定金钱和能力提升
      */
     goWebcast(timeSlot) {
+        // 应用疲劳度惩罚
+        const penalty = getFatiguePenalty(this.fatigue);
+
         let playerLevel = Math.floor((this.aim + this.spd + this.acc + this.prf_EZ + this.prf_HD) / 5);
-        let baseMoneyGain = 10 + 5 * Math.floor(playerLevel / 2);
+        let baseMoneyGain = (10 + 5 * Math.floor(playerLevel / 2)) * penalty;
         let moneyGain = baseMoneyGain;
 
         // 晚上直播获得100%额外奖励
@@ -229,6 +268,20 @@ class Player {
         this.prf_EZ += prf_EZGain;
         let prf_HDGain = Math.random() * 0.1 * impbonus;
         this.prf_HD += prf_HDGain;
+
+        // 增加疲劳度
+        this.fatigue += FATIGUE_GAIN.WEBCAST;
+        if (this.fatigue > 100) this.fatigue = 100;
+
         return { moneyGain, aimGain, spdGain, accGain, prf_EZGain, prf_HDGain };
+    }
+
+    /**
+     * 休息，降低疲劳度
+     */
+    rest() {
+        this.fatigue += FATIGUE_GAIN.REST;
+        if (this.fatigue < 0) this.fatigue = 0;
+        return FATIGUE_GAIN.REST;
     }
 }

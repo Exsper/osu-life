@@ -74,6 +74,7 @@ class Match {
          * @type {number}
          */
         this.banSlots = 1 + Math.floor(this.diffLevel / 2);
+        if (this.banSlots > 2) this.banSlots = 2;
 
         /** 玩家已用ban位
          * @type {number}
@@ -137,12 +138,12 @@ class Match {
     genBeatmaps() {
         let bid = 1;
         const counts = {
-            NM: 3 + Math.ceil(this.diffLevel / 2),
+            NM: 3 + Math.ceil(this.diffLevel / 1.5),
             HR: 2 + Math.floor(this.diffLevel / 2),
             DT: 2 + Math.floor(this.diffLevel / 2),
             HD: 2 + Math.round(this.diffLevel / 2),
-            FM: 1 + Math.ceil(this.diffLevel / 2),
-            EZ: Math.floor(this.diffLevel / 2),
+            FM: 1 + Math.ceil(this.diffLevel / 1.5),
+            EZ: 1 + Math.floor(this.diffLevel / 2),
             TB: 1
         };
 

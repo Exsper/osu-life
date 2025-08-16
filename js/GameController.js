@@ -19,6 +19,7 @@ class GameController {
         });
         document.getElementById('work-btn').addEventListener('click', () => this.playerWork());
         document.getElementById('webcast-btn').addEventListener('click', () => this.playerWebcast());
+        document.getElementById('rest-btn').addEventListener('click', () => this.playerRest());
         document.getElementById('shop-btn').addEventListener('click', () => this.showScreen('shop-screen'));
 
         // 返回按钮
@@ -108,12 +109,29 @@ class GameController {
 
         // 更新玩家状态
         document.getElementById('money-stat').textContent = this.game.player.money.toFixed(0) + " G";
+
+        const fatigueElem = document.getElementById('fatigue-stat');
+        fatigueElem.textContent = this.game.player.fatigue + " %";
+        if (this.game.player.fatigue >= 80) {
+            fatigueElem.dataset.level = "high";
+        } else if (this.game.player.fatigue >= 50) {
+            fatigueElem.dataset.level = "medium";
+        } else {
+            fatigueElem.removeAttribute("data-level");
+        }
+
+        const keyboardBonus = (this.game.player.keyboardLevel - 1) * 30;
+        const monitorBonus = (this.game.player.monitorLevel - 1) * 20;
+        const pcBonus = (this.game.player.pcLevel - 1) * 10;
+        document.getElementById('trian-bonus-stat').textContent = "+" + (keyboardBonus + monitorBonus + pcBonus) + " %";
+
         document.getElementById('aim-stat').textContent = this.game.player.aim.toFixed(2) + " ★";
         document.getElementById('spd-stat').textContent = this.game.player.spd.toFixed(2) + " ★";
         document.getElementById('acc-stat').textContent = this.game.player.acc.toFixed(2) + " ★";
         document.getElementById('men-stat').textContent = this.game.player.men.toFixed(2) + " ★";
         document.getElementById('ez-stat').textContent = this.game.player.prf_EZ.toFixed(2) + " ★";
         document.getElementById('hd-stat').textContent = this.game.player.prf_HD.toFixed(2) + " ★";
+
     }
 
     getTimeSlotText() {
@@ -169,6 +187,13 @@ class GameController {
         const result = this.game.playerWebcast();
         this.showToast(`直播完成! 赚取了 ${result.moneyGain} 金钱，并提升了技能`);
         this.nextTimeSlot();
+    }
+
+    playerRest() {
+        const deltaFatigue = this.game.playerRest();
+        this.showToast(`休息一会儿，疲劳度降低 ${-deltaFatigue}`);
+        this.nextTimeSlot();
+        this.updateUI();
     }
 
     updateShopScreen() {
@@ -312,7 +337,7 @@ class GameController {
         document.getElementById('opponent-men').textContent = opponent.men.toFixed(1);
 
         // 设置难度星级
-        const difficulty = Math.floor(this.game.currentMatch.baseStar / 2);
+        const difficulty = Math.floor(this.game.currentMatch.baseStar / 1.3);
         let stars = '';
         for (let i = 0; i < 5; i++) {
             stars += i < difficulty ? '★' : '☆';

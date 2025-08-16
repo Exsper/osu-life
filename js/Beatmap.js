@@ -200,6 +200,10 @@ class Beatmap {
         if (mods.EZ) adj_factor *= 1.1 ** player.prf_EZ;
         if (mods.HD) adj_factor *= 1.1 ** player.prf_HD;
 
+        // 疲劳度影响
+        const fatigueFactor = 1 - (player.fatigue / 300);
+        adj_factor *= fatigueFactor;
+
         // 计算谱面属性
         let ratings = this.getRatingsWithMods(mods);
         let aim_rating = ratings.aim_rating;

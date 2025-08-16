@@ -76,7 +76,7 @@ class Game {
      */
     startMatch() {
         // 根据天数计算基础难度
-        const baseStar = Math.floor(this.day / 6) + 3;
+        const baseStar = this.day / 4.8 + 1;
         this.currentMatch = new Match(this.day, baseStar);
     }
 
@@ -107,6 +107,13 @@ class Game {
      */
     playerWebcast() {
         return this.player.goWebcast(this.timeSlot);
+    }
+
+    /**
+     * 玩家休息
+     */
+    playerRest() {
+        return this.player.rest();
     }
 
     /**

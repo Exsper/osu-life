@@ -204,6 +204,14 @@ body.evening {
     color: var(--highlight);
 }
 
+#fatigue-stat {
+  color: #f39c12; /* 默认橙色 */
+}
+
+#fatigue-stat[data-level="high"] {
+  color: #e74c3c; /* 重度疲劳红色 */
+}
+
 /* 训练界面 */
 .training-grid {
     display: grid;
