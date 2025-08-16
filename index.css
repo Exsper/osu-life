@@ -496,9 +496,10 @@ body.evening {
 .tooltip {
     display: none;
     position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    margin-left: 10px;
     background: rgba(0, 0, 0, 0.9);
     color: white;
     padding: 10px;
@@ -510,14 +511,22 @@ body.evening {
     text-align: left;
     font-size: 0.9rem;
     line-height: 1.4;
-    margin-bottom: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* 训练卡片内的tooltip */
+.training-grid .tooltip-container .tooltip {
+    top: 50%;
+    left: 100%;
+    transform: translateY(-50%);
+    margin-left: 10px;
 }
 
 .tooltip-container {
     position: relative;
     display: flex;
     justify-content: center;
-    width: 100%;
+    width: 50%;
     margin: 10px 0;
 }
 
@@ -529,4 +538,25 @@ body.evening {
 
 .tooltip-container:hover .tooltip {
     display: block;
+}
+
+#main-menu .tooltip-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* 调整按钮宽度 */
+#main-menu .tooltip-container .btn {
+    width: 80%;
+    max-width: 400px;
+}
+
+/* 调整tooltip位置 */
+#main-menu .tooltip-container .tooltip {
+    top: 50%;
+    left: calc(70% + 10px);
+    transform: translateY(-50%);
+    margin-left: 0;
 }

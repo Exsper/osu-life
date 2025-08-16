@@ -201,7 +201,8 @@ class Beatmap {
         if (mods.HD) adj_factor *= 1.1 ** player.prf_HD;
 
         // 疲劳度影响
-        const fatigueFactor = 1 - (player.fatigue / 300);
+        let fatigueFactor = 1 - (player.fatigue / 300);
+        if (fatigueFactor < 0.01) fatigueFactor = 0.01;
         adj_factor *= fatigueFactor;
 
         // 计算谱面属性

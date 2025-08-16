@@ -728,6 +728,7 @@ class GameController {
         }
         text += `------------------\n`;
         text += `最终金钱: ${actualGain.toFixed(0)} G\n`;
+        text += `各项数值小幅提升\n`;
         text += `------------------\n`;
         text += `疲劳度: +${FATIGUE_GAIN.WEBCAST}`;
 
@@ -787,12 +788,12 @@ class GameController {
 
         let text = `${typeNames[type] || type}\n`;
         text += `------------------\n`;
-        text += `原始数值: ${currentValue}\n`;
+        text += `原始数值: ${currentValue}★\n`;
         text += `已训练次数: ${trainedCount}\n`;
         text += `基础提升: +${baseImprove.toFixed(2)}\n`;
         text += `外设加成: x${impbonus.toFixed(2)}\n`;
         text += `------------------\n`;
-        text += `最终数值: ${newValue}\n`;
+        text += `最终数值: ${newValue}★\n`;
         text += `------------------\n`;
         text += `疲劳度: +${FATIGUE_GAIN.TRAIN}`;
 

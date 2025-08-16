@@ -178,7 +178,7 @@ class Player {
 
         // 增加疲劳度
         this.fatigue += FATIGUE_GAIN.TRAIN;
-        if (this.fatigue > 100) this.fatigue = 100;
+        // if (this.fatigue > 100) this.fatigue = 100;
 
         this.trainingPoints--;
         return improvement.toFixed(2);
@@ -229,7 +229,7 @@ class Player {
 
         // 增加疲劳度
         this.fatigue += FATIGUE_GAIN.WORK;
-        if (this.fatigue > 100) this.fatigue = 100;
+        // if (this.fatigue > 100) this.fatigue = 100;
 
         this.money += gain;
         this.workCount += 1;
@@ -271,7 +271,7 @@ class Player {
 
         // 增加疲劳度
         this.fatigue += FATIGUE_GAIN.WEBCAST;
-        if (this.fatigue > 100) this.fatigue = 100;
+        // if (this.fatigue > 100) this.fatigue = 100;
 
         return { moneyGain, aimGain, spdGain, accGain, prf_EZGain, prf_HDGain };
     }
