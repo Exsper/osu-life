@@ -581,6 +581,8 @@ class GameController {
     }
 
     updateBanScreen() {
+        if (this.game.currentMatch.currentStep === 'pick') return;
+
         this.updateMatchStatusBar();
         document.getElementById('ban-remaining').textContent =
             this.game.currentMatch.banSlots - this.game.currentMatch.playerUsedBan;
