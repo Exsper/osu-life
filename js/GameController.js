@@ -7,10 +7,18 @@ class GameController {
         this.game = new Game();
         this.isTransitioning = false;
         this.currentScreen = 'main-menu';
-        this.initEventListeners();
-        this.updateUI();
-        this.setupTooltips();
-        this.setupOsuIdEdit();
+
+        // 显示初始过渡效果
+        this.showDayTransition(true);
+
+        // 设置定时器，在1秒后隐藏过渡效果
+        setTimeout(() => {
+            this.hideDayTransition();
+            this.initEventListeners();
+            this.updateUI();
+            this.setupTooltips();
+            this.setupOsuIdEdit();
+        }, 1000);
     }
 
     initEventListeners() {
@@ -377,12 +385,12 @@ class GameController {
         return -1;
     }
 
-    showDayTransition() {
+    showDayTransition(isInitial = false) {
         const transition = document.getElementById('day-transition');
         const dayElement = document.getElementById('transition-day');
         const daysToMatchElement = document.getElementById('days-to-match');
 
-        const nextDay = this.game.day + 1;
+        const nextDay = isInitial ? 1 : this.game.day + 1;
         dayElement.textContent = nextDay;
 
         // 计算距比赛天数
@@ -398,12 +406,18 @@ class GameController {
         }
 
         transition.classList.add('active');
+
+        // 如果是初始显示，添加额外样式
+        if (isInitial) {
+            transition.style.display = 'flex';
+            document.body.classList.add("morning");
+        }
     }
 
     hideDayTransition() {
         setTimeout(() => {
             document.getElementById('day-transition').classList.remove('active');
-        }, 1000);
+        }, 500);
     }
 
     startMatch() {
