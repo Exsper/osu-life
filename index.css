@@ -515,8 +515,16 @@ body.evening {
 
 .tooltip-container {
     position: relative;
-    display: inline-block;
+    display: flex;
+    justify-content: center;
     width: 100%;
+    margin: 10px 0;
+}
+
+.tooltip-container .btn {
+    width: 80%;
+    max-width: 400px;
+    position: relative;
 }
 
 .tooltip-container:hover .tooltip {
