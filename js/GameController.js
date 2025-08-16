@@ -82,6 +82,7 @@ class GameController {
         if (['roll-screen', 'ban-screen', 'pick-screen', 'mods-screen',
             'result-screen', 'final-result'].includes(screenId)) {
             this.updateMatchStatusBar();
+            this.updateScoreDisplay();
         }
     }
 
@@ -415,6 +416,47 @@ class GameController {
         });
     }
 
+    updateScoreDisplay() {
+        if (!this.game.currentMatch) return;
+
+        const match = this.game.currentMatch;
+        const roundToWin = match.roundToWin;
+        const playerWin = match.playerWinRound;
+        const enemyWin = match.enemyWinRound;
+        const currentRound = match.nowRound + 1;
+
+        // 查找所有比分容器并更新
+        document.querySelectorAll('.score-container').forEach(container => {
+            // 清空容器
+            container.innerHTML = '';
+
+            // 玩家比分
+            const playerScore = document.createElement('div');
+            playerScore.className = 'player-score';
+            playerScore.innerHTML = `
+            <div class="score-bar">
+                ${Array.from({ length: roundToWin }, (_, i) =>
+                    `<div class="score-block player ${i < playerWin ? 'win' : 'empty'} 
+                     ${i === playerWin ? 'current' : ''}"></div>`
+                ).join('')}
+                </div>
+            `;
+            container.appendChild(playerScore);
+
+            // 对手比分
+            const enemyScore = document.createElement('div');
+            enemyScore.className = 'enemy-score';
+            enemyScore.innerHTML = `
+                <div class="score-bar">
+                    ${Array.from({ length: roundToWin }, (_, i) =>
+                    `<div class="score-block enemy ${i < enemyWin ? 'win' : 'empty'} 
+                            ${i === enemyWin ? 'current' : ''}"></div>`
+                ).join('')}
+            </div>
+            `;
+            container.appendChild(enemyScore);
+        });
+    }
 
     updateMatchIntro() {
         const opponent = this.game.currentMatch.enemy;
@@ -686,6 +728,7 @@ class GameController {
             document.getElementById('player-win-count').textContent = result.playerWinRound;
             document.getElementById('enemy-win-count').textContent = result.enemyWinRound;
         }
+        this.updateScoreDisplay();
     }
 
     showFinalResult(result) {
@@ -720,6 +763,7 @@ class GameController {
             this.showScreen('pick-screen');
             this.updatePickScreen();
         }
+        this.updateScoreDisplay();
     }
 
     continueAfterMatch() {

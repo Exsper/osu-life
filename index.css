@@ -395,6 +395,94 @@ body.match {
     margin-top: 0;
 }
 
+/* 比分显示容器 */
+.score-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+}
+
+/* 玩家比分 */
+.player-score {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 对手比分 */
+.enemy-score {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 比分标签 */
+.score-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* 比分进度条 */
+.score-bar {
+    display: flex;
+    gap: 3px;
+}
+
+/* 比分方块 */
+.score-block {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--text);
+    border-radius: 4px;
+}
+
+/* 已获胜局数 */
+.score-block.win.player {
+    background-color: rgb(79, 79, 255);
+}
+
+.score-block.win.enemy {
+    background-color: rgb(255, 79, 79);
+}
+
+/* 未获胜局数 */
+.score-block.empty {
+    background-color: transparent;
+}
+
+/* 当前比赛局数 */
+.score-block.current {
+    position: relative;
+}
+
+.score-block.current::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid var(--highlight);
+    border-radius: 6px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
 /* 赛图样式 */
 .beatmaps-container {
     display: grid;
