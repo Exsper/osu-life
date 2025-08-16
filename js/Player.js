@@ -133,11 +133,11 @@ class Player {
         if (this.trainingPoints <= 0) return 0;
         /**
         * 训练次数越多，再次训练收益越小
-        * 第1次提升1，后续每次训练提升=0.526*0.95^N
+        * 第1次提升1，后续每次训练提升=0.55*0.9^N
         */
         const calImprove = (trainedCount) => {
             if (trainedCount <= 0) return 1;
-            return 0.526 * Math.pow(0.95, trainedCount);
+            return 0.55 * Math.pow(0.9, trainedCount);
         };
 
         // 外设对训练提升
@@ -191,17 +191,40 @@ class Player {
     initEnemyStat(baseStar) {
         // 增加 20% 的随机浮动范围
         const randFactor = 0.2;
-        this.aim = baseStar * (1 + (Math.random() * randFactor * 2) - randFactor);
-        this.spd = baseStar * (1 + (Math.random() * randFactor * 2) - randFactor);
-        this.acc = baseStar * (1 + (Math.random() * randFactor * 2) - randFactor);
-        this.men = baseStar * (1 + (Math.random() * randFactor * 2) - randFactor);
+        this.aim = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
+        this.spd = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
+        this.acc = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
+        this.men = baseStar * (1.2 + (Math.random() * randFactor * 2) - randFactor);
 
         // 为对手添加 mod 熟练度
-        this.prf_EZ = 1 + Math.random() * 2;
-        this.prf_HD = 1 + Math.random() * 2;
+        this.prf_EZ = baseStar - 1 + Math.random() * 2;
+        if (this.prf_EZ < 1) this.prf_EZ = 1;
+        this.prf_HD = baseStar - 1 + Math.random() * 2;
+        if (this.prf_HD < 1) this.prf_HD = 1;
+
+        // 偏科调整
+        let ran = Math.floor(Math.random() * 8);
+        switch (ran) {
+            case 0: { this.aim *= 1.5; break; }
+            case 1: { this.spd *= 1.5; break; }
+            case 2: { this.acc *= 1.5; break; }
+            case 3: { this.men *= 1.5; break; }
+            case 4: { this.prf_EZ *= 1.5; break; }
+            case 5: { this.prf_HD *= 1.5; break; }
+            case 6: {
+                this.aim *= 1.1;
+                this.spd *= 1.1;
+                this.acc *= 1.1;
+                this.men *= 1.1;
+                this.prf_EZ *= 1.1;
+                this.prf_HD *= 1.1;
+                break;
+            }
+            // case 7 保持原样
+        }
 
         // 设置对手的疲劳度
-        this.fatigue = Math.random() * 50;
+        this.fatigue = Math.random() * 30;
     }
 
     /**

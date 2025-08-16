@@ -1023,7 +1023,7 @@ class GameController {
         const trainedCount = player[`${playerItem}_trained`];
 
         // 计算基础提升值
-        const baseImprove = trainedCount <= 0 ? 1 : 0.526 * Math.pow(0.95, trainedCount);
+        const baseImprove = trainedCount <= 0 ? 1 : 0.55 * Math.pow(0.9, trainedCount);
 
         // 计算外设加成
         const impbonus = 1 +
