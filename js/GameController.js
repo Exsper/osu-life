@@ -149,6 +149,7 @@ class GameController {
             const improvement = this.game.playerTrain(type);
             this.showToast(`训练成功! ${this.getTrainingName(type)} 提升了 ${improvement}`);
             this.updateTrainingScreen();
+            this.updateTrainingCardTooltip(type); 
             this.updateUI();
 
             // 如果训练点为0，自动点击完成训练按钮
@@ -181,18 +182,21 @@ class GameController {
     playerWork() {
         const gain = this.game.playerWork();
         this.showToast(`工作完成! 赚取了 ${gain} 金钱`);
+        this.updateWorkTooltip();
         this.nextTimeSlot();
     }
 
     playerWebcast() {
         const result = this.game.playerWebcast();
         this.showToast(`直播完成! 赚取了 ${result.moneyGain} 金钱，并提升了技能`);
+        this.updateWebcastTooltip();
         this.nextTimeSlot();
     }
 
     playerRest() {
         const deltaFatigue = this.game.playerRest();
         this.showToast(`休息一会儿，疲劳度降低 ${-deltaFatigue}`);
+        this.updateRestTooltip(); 
         this.nextTimeSlot();
         this.updateUI();
     }
