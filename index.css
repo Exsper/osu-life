@@ -22,18 +22,19 @@ body {
     color: var(--text);
     height: 100vh;
     position: relative;
+    transition: background-color 1s ease;
 }
 
 body.morning {
-    background-color: #857545 !important;
+    background-color: #857545;
 }
 
 body.afternoon {
-    background-color: #44697f !important;
+    background-color: #44697f;
 }
 
 body.evening {
-    background-color: #502c46 !important;
+    background-color: #502c46;
 }
 
 body.match {
@@ -179,7 +180,7 @@ body.match {
 
 /* 玩家状态面板 */
 .player-stats {
-    background: var(--light-bg);
+    background: #7f7f7f7f;
     border-radius: 15px;
     padding: 15px;
     margin-bottom: 20px;
@@ -204,12 +205,12 @@ body.match {
 }
 
 .stat-value {
-    color: var(--highlight);
+    color: white;
 }
 
 /* osu ID编辑框样式 */
 .osu-id-edit {
-    background: var(--light-bg);
+    background: rgba(122, 122, 122, 0.439);
     color: var(--text);
     border: 1px solid var(--highlight);
     border-radius: 4px;
@@ -290,7 +291,7 @@ body.match {
 }
 
 .shop-item {
-    background: var(--light-bg);
+    background: #25394d7f;
     border-radius: 10px;
     padding: 15px;
     display: flex;
